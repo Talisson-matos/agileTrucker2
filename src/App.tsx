@@ -212,7 +212,7 @@ function App() {
 
 
 
-      <h2 className="titulo"> <img className='agile_trucker' src="../src/assets/Copilot_20250813_020239-removebg-preview.png" alt="truck" /> Cálculo de ICMS</h2>
+      <h2 className="titulo"> <img className='agile_trucker' src="/public/Copilot_20250813_020239-removebg-preview.png" alt="truck" /> Cálculo de ICMS</h2>
 
       <div className="formulario">
         <input
