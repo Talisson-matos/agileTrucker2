@@ -1,0 +1,92 @@
+.container {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  padding: 25px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  max-width: 800px;
+  margin: auto;
+  box-shadow: 0 0 12px rgba(0,0,0,0.05);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.clip-btn {
+  padding: 12px 16px;
+  border: 2px solid #007bff;
+  background-color: #e1f0ff;
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 160px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.clip-btn:hover {
+  background-color: #cce4ff;
+}
+
+.clip-btn .label {
+  color: #333;
+}
+
+.clip-btn .content {
+  color: #555;
+}
+
+.custom-creator {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.custom-creator input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  min-width: 180px;
+}
+
+.custom-creator button {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.custom-creator button:hover {
+  background-color: #218838;
+}
+
+.clear-btn {
+  background-color: #dc3545;
+}
+
+.clear-btn:hover {
+  background-color: #c82333;
+}
+
+.notification {
+  margin-top: 15px;
+  text-align: center;
+  color: #17a2b8;
+  font-weight: bold;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

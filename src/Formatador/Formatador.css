@@ -1,0 +1,213 @@
+.formatador-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.formatador-textarea {
+  width: 100%;
+  height: 100px;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.formatador-resultado p {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  color: #333;
+}
+
+.formatador-botoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.formatador-botao {
+  background: #2563eb;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.formatador-botao:hover {
+  background: #1d4ed8;
+}
+
+.formatador-botao.limpar {
+  background-color: #dc2626;
+}
+
+.formatador-botao.limpar:hover {
+  background-color: #b91c1c;
+}
+
+.formatador-feedback {
+  color: green;
+  margin-top: 0.5rem;
+  font-size: 14px;
+}
+
+.formatador-links {
+  margin-top: 2rem;
+}
+
+.grupo {
+  margin-bottom: 1.5rem;
+}
+
+.link-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+
+.link-buttons button {
+  background-color: #f3f3f3;
+  border: 1px solid #ccc;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #2563eb;
+  font-weight: 500;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.link-buttons button:hover {
+  background-color: #e5e5e5;
+}
+
+.dropdown-toggle {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin-top: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  display: block;
+  width: 100%;
+  text-align: left;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-toggle:hover {
+  background-color: #1d4ed8;
+}
+
+.link-buttons {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.link-buttons button {
+  background-color: #f3f3f3;
+  border: 1px solid #ccc;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #2563eb;
+  font-weight: 500;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.link-buttons button:hover {
+  background-color: #e5e5e5;
+}
+
+.formatador-transformador {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+  background: linear-gradient(to right, #f9f9f9, #fefefe);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: background 0.3s ease;
+}
+
+.formatador-transformador:hover {
+  background: linear-gradient(to right, #f0f0f0, #fafafa);
+}
+
+.formatador-transformador h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #333;
+  font-weight: 600;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.formatador-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: 'Segoe UI', sans-serif;
+  transition: border-color 0.3s ease;
+}
+
+.formatador-input:focus {
+  border-color: #0078d4;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+}
+
+.formatador-botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.formatador-botoes button {
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #0078d4;
+  color: white;
+  cursor: pointer;
+  font-family: 'Segoe UI', sans-serif;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.formatador-botoes button:hover {
+  background-color: #005fa3;
+  transform: translateY(-1px);
+}
+
+.formatador-botoes button:active {
+  transform: scale(0.98);
+}
+
+.formatador-feedback {
+  display: inline-block;
+  margin-top: 0.8rem;
+  color: #28a745;
+  font-weight: 500;
+  font-size: 0.95rem;
+  font-family: 'Segoe UI', sans-serif;
+}
