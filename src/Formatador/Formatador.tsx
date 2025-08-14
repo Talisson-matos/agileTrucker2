@@ -11,9 +11,6 @@ const Formatador = () => {
   const [textoCopiado, setTextoCopiado] = useState(false)
 
 
-
-
-
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const original = e.target.value
     const somenteNumeros = original.replace(/[^\d]/g, '')

@@ -208,6 +208,12 @@ function App() {
           </button>
         </Link>
 
+        <Link className="formatador_agile" to="/extrator">
+          <button className="styled-button">
+            <ImRocket /> Extrator
+          </button>
+        </Link>
+
       </div>
 
 

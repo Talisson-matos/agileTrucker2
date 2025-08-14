@@ -6,6 +6,7 @@ import Message from './Message/Message.tsx';
 import Agile from './Agile/Agile.tsx';
 import './Globals.css'
 import App from './App.tsx'
+import Extrator from './Extrator/Extrator.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/message" element={<Message />} />
         <Route path="/formatador" element={<Formatador />} />
         <Route path="/agile" element={<Agile />} />
+        <Route path="/extrator" element={<Extrator />} />        
       </Routes>
     </BrowserRouter>
 
