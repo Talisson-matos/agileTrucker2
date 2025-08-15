@@ -65,7 +65,8 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         res.json(resultado);
     } catch (err) {
         console.error('Erro ao processar PDF:', err);
-        res.status(500).json({ error: 'Erro ao processar PDF', details: err.message });
+        const errorMessage = typeof err === 'object' && err !== null && 'message' in err ? (err as { message: string }).message : String(err);
+        res.status(500).json({ error: 'Erro ao processar PDF', details: errorMessage });
     }
 });
 
