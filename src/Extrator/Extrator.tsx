@@ -21,9 +21,9 @@ const ExtratorNF: React.FC = () => {
     setLoading(true);
     const formData = new FormData();
     formData.append('file', file);
-
+//http://localhost:5000/upload
     try {
-      const response = await fetch('http://localhost:5000/upload', {
+      const response = await fetch('https://agiletrucker2-3.onrender.com', {
         method: 'POST',
         body: formData,
       });
