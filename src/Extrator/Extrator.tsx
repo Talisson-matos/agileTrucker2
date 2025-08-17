@@ -21,42 +21,80 @@ const ExtratorNF: React.FC = () => {
     setLoading(true);
     const formData = new FormData();
     formData.append('file', file);
-//http://localhost:5000/upload
+
     try {
+      console.log('Enviando arquivo para:', 'https://agiletrucker-backend.onrender.com/upload');
+      
       const response = await fetch('https://agiletrucker-backend.onrender.com/upload', {
         method: 'POST',
         body: formData,
+        // Removendo headers explícitos para deixar o browser definir o Content-Type
+        // headers: {
+        //   'Content-Type': 'multipart/form-data' // NÃO definir isso manualmente
+        // }
       });
 
-      if (!response.ok) throw new Error('Erro na resposta do servidor');
+      console.log('Status da resposta:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Erro da resposta:', errorText);
+        throw new Error(`Erro ${response.status}: ${errorText}`);
+      }
 
       const data = await response.json();
+      console.log('Dados recebidos:', data);
       setDados(data);
     } catch (error) {
       console.error('Erro ao enviar o arquivo:', error);
-      alert('Falha ao extrair dados da nota fiscal.');
+      
+      let errorMessage = 'Falha ao extrair dados da nota fiscal.';
+      if (error instanceof Error) {
+        errorMessage += ` Detalhes: ${error.message}`;
+      }
+      
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   const copiarParaClipboard = (valor: string, label: string) => {
-    navigator.clipboard.writeText(valor);
-    
-    // Toast notification
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = `${label} copiado!`;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.classList.add('show');
-    }, 100);
-    
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => document.body.removeChild(toast), 300);
-    }, 2000);
+    navigator.clipboard.writeText(valor).then(() => {
+      // Toast notification
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = `${label} copiado!`;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 100);
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          if (document.body.contains(toast)) {
+            document.body.removeChild(toast);
+          }
+        }, 300);
+      }, 2000);
+    }).catch(err => {
+      console.error('Erro ao copiar:', err);
+      // Fallback para navegadores mais antigos
+      const textArea = document.createElement('textarea');
+      textArea.value = valor;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        alert(`${label} copiado!`);
+      } catch (fallbackErr) {
+        console.error('Fallback copy failed:', fallbackErr);
+      }
+      document.body.removeChild(textArea);
+    });
   };
 
   const limparTudo = () => {

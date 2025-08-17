@@ -1,35 +1,63 @@
 import express from 'express';
 import multer from 'multer';
 import PDFParser from 'pdf2json';
-import path from 'path';
-import { unlink } from 'fs/promises';
 import cors from 'cors';
+import { Buffer } from 'buffer';
 
 const app = express();
-const upload = multer({ storage: multer.memoryStorage() });
 
+// Configuração do multer para memory storage
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit
+  }
+});
 
-// Habilita CORS para permitir requisições do frontend
+// Configuração CORS mais robusta
 app.use(cors({
-  origin: 'https://agile-trucker.vercel.app'
+  origin: ['https://agile-trucker.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
+// Middleware para parsing JSON
+app.use(express.json());
+
+// Rota de teste
+app.get('/', (req, res) => {
+  res.json({ message: 'Backend funcionando!' });
+});
+
 app.post('/upload', upload.single('file'), async (req, res) => {
+    console.log('Recebendo arquivo...');
+    
     if (!req.file) {
+        console.log('Nenhum arquivo recebido');
         return res.status(400).json({ error: 'Arquivo não enviado' });
     }
 
-    const filePath = path.resolve(req.file.path);
+    console.log('Arquivo recebido:', req.file.originalname, 'Size:', req.file.size);
 
     try {
         // Inicializa o parser PDF
         const pdfParser = new PDFParser();
 
         // Promisifica o processo de parsing
-        const parsePDF = () => new Promise((resolve, reject) => {
-            pdfParser.on('pdfParser_dataError', errData => reject(new Error(String(errData.parserError))));
-            pdfParser.on('pdfParser_dataReady', pdfData => resolve(pdfData));
-            pdfParser.loadPDF(filePath);
+        const parsePDF = (): Promise<any> => new Promise((resolve, reject) => {
+            pdfParser.on('pdfParser_dataError', errData => {
+                console.error('Erro no parser PDF:', errData);
+                reject(new Error(String(errData.parserError)));
+            });
+            
+            pdfParser.on('pdfParser_dataReady', pdfData => {
+                console.log('PDF parseado com sucesso');
+                resolve(pdfData);
+            });
+            
+            // Parse do buffer em memória ao invés de arquivo
+            pdfParser.parseBuffer(req.file!.buffer);
         });
 
         // Extrai os dados do PDF
@@ -41,7 +69,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         ).join(' ');
 
         // Log do texto extraído para depuração
-        console.log('Texto extraído do PDF:', texto);
+        console.log('Texto extraído do PDF (primeiros 500 chars):', texto.substring(0, 500));
 
         // Extrai os CNPJs primeiro
         const cnpjRemetente = extrairCNPJ(texto, 1);
@@ -57,18 +85,17 @@ app.post('/upload', upload.single('file'), async (req, res) => {
             quantidade: extrairQuantidade(texto),
             peso_liquido: extrairPesoLiquido(texto),
             valor_nota: extrairValorNota(texto),
-
         };
 
         // Log do resultado para depuração
         console.log('Dados extraídos:', resultado);
 
-        // Remove o arquivo após o processamento
-        await unlink(filePath);
         res.json(resultado);
     } catch (err) {
         console.error('Erro ao processar PDF:', err);
-        const errorMessage = typeof err === 'object' && err !== null && 'message' in err ? (err as { message: string }).message : String(err);
+        const errorMessage = typeof err === 'object' && err !== null && 'message' in err 
+            ? (err as { message: string }).message 
+            : String(err);
         res.status(500).json({ error: 'Erro ao processar PDF', details: errorMessage });
     }
 });
@@ -93,7 +120,7 @@ function extrairNumeroNota(texto: string): string {
 
     const semPontos = numero.replace(/\./g, '');
     const semZerosIniciais = semPontos.replace(/^0+/, '');
-    return semZerosIniciais;
+    return semZerosIniciais || '0';
 }
 
 function extrairChave(texto: string): string {
@@ -169,9 +196,6 @@ function extrairCNPJPagadorFrete(texto: string, cnpjRemetente: string, cnpjDesti
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    if (process.env.PORT) {
-        console.log(`Servidor rodando em produção na porta ${PORT}`);
-    } else {
-        console.log(`Servidor rodando localmente em http://localhost:${PORT}`);
-    }
+    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log('Environment:', process.env.NODE_ENV || 'development');
 });
