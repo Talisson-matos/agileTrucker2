@@ -6,7 +6,8 @@ import { unlink } from 'fs/promises';
 import cors from 'cors';
 
 const app = express();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
+
 
 // Habilita CORS para permitir requisições do frontend
 app.use(cors({
