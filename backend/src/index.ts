@@ -163,6 +163,12 @@ function extrairCNPJPagadorFrete(texto: string, cnpjRemetente: string, cnpjDesti
     return 'Não encontrado';
 }
 
-app.listen(5000, () => {
-    console.log('Servidor rodando em http://localhost:5000');
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    if (process.env.PORT) {
+        console.log(`Servidor rodando em produção na porta ${PORT}`);
+    } else {
+        console.log(`Servidor rodando localmente em http://localhost:${PORT}`);
+    }
 });
