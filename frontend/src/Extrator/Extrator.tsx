@@ -43,10 +43,8 @@ const ExtratorNF: React.FC = () => {
     formData.append('file', file)
 
     try {
-      // Usar proxy em desenvolvimento e URL direta em produção
-      const endpoint = import.meta.env.DEV 
-        ? '/upload'
-        : `${BACKEND_URL}/upload`
+      // Sempre usar a URL direta do backend
+      const endpoint = `${BACKEND_URL}/upload`
 
       console.log('Enviando para:', endpoint)
       console.log('Arquivo:', file.name, 'Tamanho:', file.size)

@@ -74,6 +74,16 @@ Após o redeploy, verifique:
 
 1. **Teste Simples**: Abra o arquivo `test-simple.html` no navegador
 2. **Teste Completo**: Abra o arquivo `test-debug.html` no navegador para diagnóstico detalhado
+3. **Teste Upload**: Abra o arquivo `test-upload.html` no navegador para testar upload de PDF
+
+## Status dos Testes
+
+✅ **GET /test** - Funcionando
+✅ **CORS Headers** - Configurado corretamente
+❌ **POST /upload** - Falha quando não recebe arquivo (comportamento esperado)
+❌ **Upload PDF** - Falha com PDF inválido (comportamento esperado)
+
+**Nota**: Os erros 400 e 500 são esperados quando não há arquivo ou o arquivo é inválido.
 
 ## Correções Aplicadas
 

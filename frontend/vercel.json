@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/upload",
-      "destination": "https://agiletrucker-backend.onrender.com/upload"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
