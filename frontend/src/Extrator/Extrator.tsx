@@ -5,7 +5,7 @@ interface DadosNF {
   [key: string]: string
 }
 
-const BACKEND_URL = 'https://agile-trucker-backend.onrender.com' ;
+const BACKEND_URL = 'https://agiletrucker-backend.onrender.com';
 
 const campoLabels: Record<string, string> = {
   cnpj_pagador_frete: 'CNPJ Tomador do Frete',
@@ -49,14 +49,23 @@ const ExtratorNF: React.FC = () => {
         : `${BACKEND_URL}/upload`
 
       console.log('Enviando para:', endpoint)
+      console.log('Arquivo:', file.name, 'Tamanho:', file.size)
+      
       const res = await fetch(endpoint, {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+          // Não incluir Content-Type para FormData
+        }
       })
+
+      console.log('Status da resposta:', res.status)
+      console.log('Headers da resposta:', Object.fromEntries(res.headers.entries()))
 
       if (!res.ok) {
         const errText = await res.text()
-        throw new Error(`${res.status} — ${errText}`)
+        console.error('Erro do servidor:', errText)
+        throw new Error(`Erro ${res.status}: ${errText}`)
       }
 
       const json = await res.json()
@@ -66,7 +75,7 @@ const ExtratorNF: React.FC = () => {
       console.error('Erro ao enviar o arquivo:', err)
       alert(
         `Falha ao extrair dados da nota fiscal.\n${
-          err instanceof Error ? err.message : err
+          err instanceof Error ? err.message : String(err)
         }`
       )
     } finally {

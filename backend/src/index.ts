@@ -16,26 +16,69 @@ const upload = multer({
 
 
 app.use(cors({
-  origin: '*',
+  origin: [
+    'https://agile-trucker.vercel.app',
+    'https://agile-trucker-git-main-talisson-moreira-matos-projects.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 
 app.use(express.json());
 
+// Middleware de logging para debug
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log('Headers:', req.headers);
+  next();
+});
+
 app.get('/', (req, res) => {
-  res.json({ message: 'Backend funcionando!' });
+  res.json({ 
+    message: 'Backend funcionando!',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+app.get('/test', (req, res) => {
+  res.json({ 
+    message: 'Teste de conectividade',
+    timestamp: new Date().toISOString(),
+    cors: 'Configurado',
+    port: PORT
+  });
 });
 
 app.post('/upload', upload.single('file'), async (req, res) => {
+    console.log('=== INÍCIO DO PROCESSAMENTO ===');
     console.log('Recebendo arquivo...');
+    console.log('Headers da requisição:', req.headers);
+    console.log('Body da requisição:', req.body);
+    console.log('File:', req.file);
     
     if (!req.file) {
         console.log('Nenhum arquivo recebido');
-
-        return res.status(400).json({ error: 'Arquivo não enviado' });
+        return res.status(400).json({ 
+            error: 'Arquivo não enviado',
+            receivedHeaders: req.headers,
+            receivedBody: req.body
+        });
     }
 
-    console.log('Arquivo recebido:', req.file.originalname, 'Size:', req.file.size);
+    console.log('Arquivo recebido:', req.file.originalname, 'Size:', req.file.size, 'Mimetype:', req.file.mimetype);
 
     try {
    
@@ -185,7 +228,7 @@ function extrairCNPJPagadorFrete(texto: string, cnpjRemetente: string, cnpjDesti
     
     return 'Não encontrado';}
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
