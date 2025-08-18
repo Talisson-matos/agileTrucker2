@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import PDFParser from 'pdf2json';
 import cors from 'cors';
-import { Buffer } from 'buffer';
+
 
 const app = express();
 
@@ -19,7 +19,6 @@ app.use(cors({
   origin: ['https://agile-trucker.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
 }));
 
 // Middleware para parsing JSON
