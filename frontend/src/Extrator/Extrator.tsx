@@ -1,149 +1,124 @@
-import React, { useState } from 'react';
-import './Extrator.css';
+import React, { useState } from 'react'
+import './Extrator.css'
+
+interface DadosNF {
+  [key: string]: string
+}
+
+const BACKEND_URL = import.meta.env.VITE_API_URL as string
+
+const campoLabels: Record<string, string> = {
+  cnpj_pagador_frete: 'CNPJ Tomador do Frete',
+  cnpj_remetente: 'CNPJ Remetente',
+  cnpj_destinatario: 'CNPJ Destinatário',
+  serie: 'Série',
+  numero_nota: 'Número da Nota',
+  chave_acesso: 'Chave de Acesso',
+  quantidade: 'Quantidade',
+  peso_liquido: 'Peso Líquido',
+  valor_nota: 'Valor da Nota',
+}
 
 const ExtratorNF: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [dados, setDados] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState<File | null>(null)
+  const [dados, setDados] = useState<DadosNF>({})
+  const [loading, setLoading] = useState(false)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile && selectedFile.type === 'application/pdf') {
-      setFile(selectedFile);
+    const selected = e.target.files?.[0]
+    if (selected?.type === 'application/pdf') {
+      setFile(selected)
     } else {
-      alert('Por favor, selecione um arquivo PDF.');
+      alert('Por favor, selecione um arquivo PDF.')
+      e.target.value = ''
+      setFile(null)
     }
-  };
+  }
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file) return
+    setLoading(true)
 
-    setLoading(true);
-    const formData = new FormData();
-    formData.append('file', file);
+    const formData = new FormData()
+    formData.append('file', file)
 
-    // Lista de URLs para tentar
-    const backendUrls = [
-      'https://agiletrucker-backend.onrender.com/upload',
-      'https://agiletrucker-backend.onrender.com/upload'
-    ];
+    try {
+      // Em dev, proxy cuida de /upload para BACKEND_URL
+      const endpoint = import.meta.env.DEV
+        ? '/upload'
+        : `${BACKEND_URL}/upload`
 
-    for (const url of backendUrls) {
-      try {
-        console.log('Tentando URL:', url);
-        
-        const response = await fetch(url, {
-          method: 'POST',
-          body: formData,
-          mode: 'cors',
-          // Removendo headers explícitos para deixar o browser definir o Content-Type
-        });
+      console.log('Enviando para:', endpoint)
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        body: formData
+      })
 
-        console.log('Status da resposta:', response.status);
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Erro da resposta:', errorText);
-          throw new Error(`Erro ${response.status}: ${errorText}`);
-        }
-
-        const data = await response.json();
-        console.log('Dados recebidos:', data);
-        setDados(data);
-        return; // Sucesso, sair do loop
-        
-      } catch (error) {
-        console.error(`Erro na URL ${url}:`, error);
-        
-        // Se é o último URL da lista, mostrar erro
-        if (url === backendUrls[backendUrls.length - 1]) {
-          let errorMessage = 'Falha ao extrair dados da nota fiscal.';
-          if (error instanceof Error) {
-            errorMessage += ` Detalhes: ${error.message}`;
-          }
-          alert(errorMessage);
-        }
+      if (!res.ok) {
+        const errText = await res.text()
+        throw new Error(`${res.status} — ${errText}`)
       }
+
+      const json = await res.json()
+      console.log('Resposta do backend:', json)
+      setDados(json)
+    } catch (err) {
+      console.error('Erro ao enviar o arquivo:', err)
+      alert(
+        `Falha ao extrair dados da nota fiscal.\n${
+          err instanceof Error ? err.message : err
+        }`
+      )
+    } finally {
+      setLoading(false)
     }
-    
-    setLoading(false);
-  };
+  }
+
+  const valorNaoEncontrado = (v: string) =>
+    !v || v === 'Não encontrado'
 
   const copiarParaClipboard = (valor: string, label: string) => {
-    navigator.clipboard.writeText(valor).then(() => {
-      // Toast notification
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.textContent = `${label} copiado!`;
-      document.body.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.classList.add('show');
-      }, 100);
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
+    navigator.clipboard
+      .writeText(valor)
+      .then(() => {
+        const toast = document.createElement('div')
+        toast.className = 'toast'
+        toast.textContent = `${label} copiado!`
+        document.body.appendChild(toast)
+        setTimeout(() => toast.classList.add('show'), 100)
         setTimeout(() => {
-          if (document.body.contains(toast)) {
-            document.body.removeChild(toast);
-          }
-        }, 300);
-      }, 2000);
-    }).catch(err => {
-      console.error('Erro ao copiar:', err);
-      // Fallback para navegadores mais antigos
-      const textArea = document.createElement('textarea');
-      textArea.value = valor;
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      try {
-        document.execCommand('copy');
-        alert(`${label} copiado!`);
-      } catch (fallbackErr) {
-        console.error('Fallback copy failed:', fallbackErr);
-      }
-      document.body.removeChild(textArea);
-    });
-  };
+          toast.classList.remove('show')
+          setTimeout(() => document.body.removeChild(toast), 300)
+        }, 2000)
+      })
+      .catch(console.error)
+  }
 
   const limparTudo = () => {
-    setFile(null);
-    setDados({});
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (fileInput) fileInput.value = '';
-  };
+    setFile(null)
+    setDados({})
+    const input = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement
+    if (input) input.value = ''
+  }
 
-  // Mapeia os nomes dos campos para rótulos mais amigáveis
-  const campoLabels: Record<string, string> = {
-    cnpj_pagador_frete: 'CNPJ Tomador do Frete',
-    cnpj_remetente: 'CNPJ Remetente',
-    cnpj_destinatario: 'CNPJ Destinatário',
-    serie: 'Série',
-    numero_nota: 'Número da Nota',
-    chave_acesso: 'Chave de Acesso',
-    quantidade: 'Quantidade',
-    peso_liquido: 'Peso Líquido',
-    valor_nota: 'Valor da Nota',    
-  };
-
-  const temDados = Object.keys(dados).length > 0;
-  const valorNaoEncontrado = (valor: string) => valor === 'Não encontrado' || !valor;
+  const temDados = Object.keys(dados).length > 0
 
   return (
     <div className="extrator-container">
-      <div className="header">
+      <header className="header">
         <h2 className="title">📄 Extrator de Nota Fiscal</h2>
-      </div>
+      </header>
 
-      <div className="upload-section">
+      <section className="upload-section">
         <div className="file-input-wrapper">
-          <input 
-            type="file" 
-            accept=".pdf" 
+          <input
+            id="file-input"
+            type="file"
+            accept="application/pdf"
             onChange={handleFileChange}
             className="file-input"
-            id="file-input"
           />
           <label htmlFor="file-input" className="file-label">
             <span className="file-icon">📎</span>
@@ -155,70 +130,62 @@ const ExtratorNF: React.FC = () => {
           <button
             onClick={handleUpload}
             disabled={!file || loading}
-            className={`btn btn-primary ${(!file || loading) ? 'disabled' : ''}`}
+            className={`btn btn-primary ${
+              !file || loading ? 'disabled' : ''
+            }`}
           >
-            {loading ? (
-              <>
-                <span className="spinner"></span>
-                Processando...
-              </>
-            ) : (
-              <>
-                <span className="btn-icon">🚀</span>
-                Extrair Dados
-              </>
-            )}
+            {loading ? 'Processando...' : '🚀 Extrair Dados'}
           </button>
-
           {temDados && (
             <button
               onClick={limparTudo}
               className="btn btn-secondary"
             >
-              <span className="btn-icon">🗑️</span>
-              Limpar Tudo
+              🗑️ Limpar Tudo
             </button>
           )}
         </div>
-      </div>
+      </section>
 
       {temDados ? (
-        <div className="results-section">
-          <h2 className="results-title">
-            <span className="icon">📋</span>
-            Dados Extraídos
-          </h2>
-          
+        <section className="results-section">
+          <h3 className="results-title">📋 Dados Extraídos</h3>
           <div className="data-grid">
-            {Object.entries(dados).map(([campo, valor]) => {
-              const label = campoLabels[campo] || campo;
-              const semValor = valorNaoEncontrado(valor);
-              
+            {Object.entries(dados).map(([key, val]) => {
+              const label = campoLabels[key] || key
+              const noValue = valorNaoEncontrado(val)
               return (
-                <div key={campo} className="data-item">
-                  <div className="data-label">{label}</div>
+                <div key={key} className="data-item">
+                  <span className="data-label">{label}</span>
                   <button
-                    onClick={() => copiarParaClipboard(valor, label)}
-                    className={`data-button ${semValor ? 'no-value' : 'has-value'}`}
-                    title={semValor ? 'Valor não encontrado' : `Clique para copiar: ${valor}`}
+                    onClick={() => copiarParaClipboard(val, label)}
+                    className={`data-button ${
+                      noValue ? 'no-value' : 'has-value'
+                    }`}
+                    title={
+                      noValue
+                        ? 'Valor não encontrado'
+                        : `Clique para copiar: ${val}`
+                    }
                   >
-                    <span className="button-text">{semValor ? 'Não encontrado' : valor}</span>
+                    <span className="button-text">
+                      {noValue ? 'Não encontrado' : val}
+                    </span>
                     <span className="copy-icon">📋</span>
                   </button>
                 </div>
-              );
+              )
             })}
           </div>
-        </div>
+        </section>
       ) : (
         <div className="empty-state">
           <div className="empty-icon">📁</div>
-          <h3>Nenhum dado extraído</h3>
-          <p>Selecione e envie um arquivo PDF para começar a extrair os dados da nota fiscal.</p>
+          <p>Selecione e envie um arquivo PDF para extrair os dados.</p>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ExtratorNF;
+export default ExtratorNF
