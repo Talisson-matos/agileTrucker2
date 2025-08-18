@@ -22,41 +22,51 @@ const ExtratorNF: React.FC = () => {
     const formData = new FormData();
     formData.append('file', file);
 
-    try {
-      console.log('Enviando arquivo para:', 'https://agiletrucker-backend.onrender.com/upload');
-      
-      const response = await fetch('https://agiletrucker-backend.onrender.com/upload', {
-        method: 'POST',
-        body: formData,
-        // Removendo headers explícitos para deixar o browser definir o Content-Type
-        // headers: {
-        //   'Content-Type': 'multipart/form-data' // NÃO definir isso manualmente
-        // }
-      });
+    // Lista de URLs para tentar
+    const backendUrls = [
+      'https://agiletrucker-backend.onrender.com/upload',
+      'https://agiletrucker-backend.onrender.com/upload'
+    ];
 
-      console.log('Status da resposta:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Erro da resposta:', errorText);
-        throw new Error(`Erro ${response.status}: ${errorText}`);
-      }
+    for (const url of backendUrls) {
+      try {
+        console.log('Tentando URL:', url);
+        
+        const response = await fetch(url, {
+          method: 'POST',
+          body: formData,
+          mode: 'cors',
+          // Removendo headers explícitos para deixar o browser definir o Content-Type
+        });
 
-      const data = await response.json();
-      console.log('Dados recebidos:', data);
-      setDados(data);
-    } catch (error) {
-      console.error('Erro ao enviar o arquivo:', error);
-      
-      let errorMessage = 'Falha ao extrair dados da nota fiscal.';
-      if (error instanceof Error) {
-        errorMessage += ` Detalhes: ${error.message}`;
+        console.log('Status da resposta:', response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Erro da resposta:', errorText);
+          throw new Error(`Erro ${response.status}: ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('Dados recebidos:', data);
+        setDados(data);
+        return; // Sucesso, sair do loop
+        
+      } catch (error) {
+        console.error(`Erro na URL ${url}:`, error);
+        
+        // Se é o último URL da lista, mostrar erro
+        if (url === backendUrls[backendUrls.length - 1]) {
+          let errorMessage = 'Falha ao extrair dados da nota fiscal.';
+          if (error instanceof Error) {
+            errorMessage += ` Detalhes: ${error.message}`;
+          }
+          alert(errorMessage);
+        }
       }
-      
-      alert(errorMessage);
-    } finally {
-      setLoading(false);
     }
+    
+    setLoading(false);
   };
 
   const copiarParaClipboard = (valor: string, label: string) => {
