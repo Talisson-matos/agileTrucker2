@@ -78,3 +78,4 @@ O erro no `agile-trucker.vercel.app` aparece porque:
 - ✅ Dados sendo extraídos corretamente
 
 **Apenas faça o commit e push das alterações para resolver definitivamente!** 🚀
+
