@@ -5,7 +5,7 @@ interface DadosNF {
   [key: string]: string
 }
 
-const BACKEND_URL = import.meta.env.VITE_API_URL as string
+const BACKEND_URL = 'https://agile-trucker-backend.onrender.com' ;
 
 const campoLabels: Record<string, string> = {
   cnpj_pagador_frete: 'CNPJ Tomador do Frete',
