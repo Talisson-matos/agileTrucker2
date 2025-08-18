@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Backend</title>
+</head>
+<body>
+    <h1>Teste de Conectividade com Backend</h1>
+    <button onclick="testBackend()">Testar Backend</button>
+    <div id="result"></div>
+
+    <script>
+        async function testBackend() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testando...';
+            
+            try {
+                const response = await fetch('https://agiletrucker-backend.onrender.com/test', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<h3>✅ Sucesso!</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<h3>❌ Erro ${response.status}</h3><p>${response.statusText}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<h3>❌ Erro de Rede</h3><p>${error.message}</p><p>Detalhes: ${error}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -69,3 +69,33 @@ Após o redeploy, verifique:
 1. Se o backend responde em `https://agiletrucker-backend.onrender.com/test`
 2. Se o frontend consegue fazer upload de arquivos
 3. Se não há mais erros de CORS no console do navegador
+
+## Teste Rápido
+
+1. **Teste Simples**: Abra o arquivo `test-simple.html` no navegador
+2. **Teste Completo**: Abra o arquivo `test-debug.html` no navegador para diagnóstico detalhado
+
+## Correções Aplicadas
+
+### Backend (Render)
+- ✅ CORS configurado para aceitar qualquer origem (`origin: true`)
+- ✅ Middleware OPTIONS simplificado
+- ✅ Logs detalhados para debug
+- ✅ Endpoints de teste funcionando
+
+### Frontend (Vercel)
+- ✅ Configuração simplificada do `vercel.json`
+- ✅ Proxy configurado para `/upload`
+- ✅ Tratamento de erros melhorado
+
+## Problemas Comuns e Soluções
+
+### Erro de CORS persistente
+- Verifique se o backend está rodando
+- Confirme se a URL do backend está correta
+- Teste com o arquivo `test-simple.html`
+
+### Erro de rede
+- O Render pode estar com o serviço pausado (free tier)
+- Aguarde alguns segundos e tente novamente
+- Verifique os logs no dashboard do Render

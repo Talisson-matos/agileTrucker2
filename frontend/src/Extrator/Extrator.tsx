@@ -43,20 +43,20 @@ const ExtratorNF: React.FC = () => {
     formData.append('file', file)
 
     try {
-      // Em dev, proxy cuida de /upload para BACKEND_URL
-      const endpoint = import.meta.env.DEV
+      // Usar proxy em desenvolvimento e URL direta em produção
+      const endpoint = import.meta.env.DEV 
         ? '/upload'
         : `${BACKEND_URL}/upload`
 
       console.log('Enviando para:', endpoint)
       console.log('Arquivo:', file.name, 'Tamanho:', file.size)
+      console.log('BACKEND_URL:', BACKEND_URL)
+      console.log('Environment:', import.meta.env.MODE)
       
       const res = await fetch(endpoint, {
         method: 'POST',
         body: formData,
-        headers: {
-          // Não incluir Content-Type para FormData
-        }
+        mode: 'cors'
       })
 
       console.log('Status da resposta:', res.status)

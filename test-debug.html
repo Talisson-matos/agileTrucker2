@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Backend</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug Backend - Teste Completo</h1>
+    
+    <div class="test-section info">
+        <h3>Informações do Navegador</h3>
+        <p><strong>User Agent:</strong> <span id="userAgent"></span></p>
+        <p><strong>URL Atual:</strong> <span id="currentUrl"></span></p>
+        <p><strong>Origem:</strong> <span id="origin"></span></p>
+    </div>
+
+    <div class="test-section">
+        <h3>Teste 1: GET Simples</h3>
+        <button onclick="testGet()">Testar GET</button>
+        <div id="result1"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Teste 2: POST Simples</h3>
+        <button onclick="testPost()">Testar POST</button>
+        <div id="result2"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Teste 3: Upload Simulado</h3>
+        <button onclick="testUpload()">Testar Upload</button>
+        <div id="result3"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Teste 4: Verificar Headers</h3>
+        <button onclick="testHeaders()">Verificar Headers</button>
+        <div id="result4"></div>
+    </div>
+
+    <script>
+        // Informações do navegador
+        document.getElementById('userAgent').textContent = navigator.userAgent;
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('origin').textContent = window.location.origin;
+
+        const BACKEND_URL = 'https://agiletrucker-backend.onrender.com';
+
+        function showResult(elementId, success, message, data = null) {
+            const element = document.getElementById(elementId);
+            element.className = success ? 'success' : 'error';
+            element.innerHTML = `
+                <h4>${success ? '✅ Sucesso' : '❌ Erro'}</h4>
+                <p>${message}</p>
+                ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+            `;
+        }
+
+        async function testGet() {
+            try {
+                console.log('Testando GET...');
+                const response = await fetch(`${BACKEND_URL}/test`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                console.log('Response:', response);
+                console.log('Headers:', Object.fromEntries(response.headers.entries()));
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('result1', true, `Status: ${response.status}`, data);
+                } else {
+                    showResult('result1', false, `Erro ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Erro no GET:', error);
+                showResult('result1', false, `Erro de rede: ${error.message}`);
+            }
+        }
+
+        async function testPost() {
+            try {
+                console.log('Testando POST...');
+                const response = await fetch(`${BACKEND_URL}/upload`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ test: 'data' })
+                });
+                
+                console.log('Response:', response);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('result2', true, `Status: ${response.status}`, data);
+                } else {
+                    const errorText = await response.text();
+                    showResult('result2', false, `Erro ${response.status}: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Erro no POST:', error);
+                showResult('result2', false, `Erro de rede: ${error.message}`);
+            }
+        }
+
+        async function testUpload() {
+            try {
+                console.log('Testando Upload...');
+                
+                // Criar um arquivo de teste
+                const testContent = 'Teste de arquivo PDF';
+                const testFile = new File([testContent], 'test.pdf', { type: 'application/pdf' });
+                
+                const formData = new FormData();
+                formData.append('file', testFile);
+                
+                const response = await fetch(`${BACKEND_URL}/upload`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: formData
+                });
+                
+                console.log('Response:', response);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult('result3', true, `Status: ${response.status}`, data);
+                } else {
+                    const errorText = await response.text();
+                    showResult('result3', false, `Erro ${response.status}: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Erro no Upload:', error);
+                showResult('result3', false, `Erro de rede: ${error.message}`);
+            }
+        }
+
+        async function testHeaders() {
+            try {
+                console.log('Testando Headers...');
+                const response = await fetch(`${BACKEND_URL}/test`, {
+                    method: 'OPTIONS',
+                    mode: 'cors'
+                });
+                
+                console.log('Response:', response);
+                const headers = Object.fromEntries(response.headers.entries());
+                console.log('Headers:', headers);
+                
+                showResult('result4', true, `Status: ${response.status}`, headers);
+            } catch (error) {
+                console.error('Erro nos Headers:', error);
+                showResult('result4', false, `Erro de rede: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

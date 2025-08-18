@@ -16,19 +16,23 @@ const upload = multer({
 
 
 app.use(cors({
-  origin: [
-    'https://agile-trucker.vercel.app',
-    'https://agile-trucker-git-main-talisson-moreira-matos-projects.vercel.app',
-    'http://localhost:5173',
-    'http://localhost:3000'
-  ],
-  credentials: true,
+  origin: true, // Aceitar qualquer origem
+  credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 
 
 app.use(express.json());
+
+// Middleware para lidar com requisições OPTIONS (preflight)
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
+  res.header('Access-Control-Allow-Credentials', 'false');
+  res.sendStatus(200);
+});
 
 // Middleware de logging para debug
 app.use((req, res, next) => {
