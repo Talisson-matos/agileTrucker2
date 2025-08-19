@@ -210,42 +210,48 @@ function extrairCNPJPagadorFrete(texto: string, cnpjRemetente: string, cnpjDesti
     // Procura por "FRETE" e analisa o contexto
     const textoFrete = texto.match(/FRETE[\s\S]{0,200}/i)?.[0] || '';
 
-    // Padrões para CIF (Remetente paga)
+    // Padrões específicos para CIF (Remetente paga) - mais específicos primeiro
     const padroesCIF = [
         /0\s*[-,]\s*CIF/i,
         /0\s*[-]\s*Por conta do Emit/i,
         /0\s*[-]\s*Por conta do Remetente/i,
-        /Por conta do Remetente/i,
-        /Remetente/i,
-        /CIF/i,
+        /Modalidade do Frete[\s\S]{0,50}0/i,
         /0\s*[-,]/,
-        /Modalidade do Frete[\s\S]{0,50}0/i
+        /CIF/i
     ];
 
-    // Padrões para FOB (Destinatário paga)
+    // Padrões específicos para FOB (Destinatário paga) - mais específicos primeiro
     const padroesFOB = [
         /1\s*[-,]\s*FOB/i,
         /1\s*[-]\s*Por conta do Dest/i,
         /1\s*[-]\s*Por conta do Destinatario/i,
         /Por conta do Destinat[aá]rio/i,
-        /Destinatario/i,
-        /FOB/i,
+        /Modalidade do Frete[\s\S]{0,50}1/i,
         /1\s*[-,]/,
-        /Modalidade do Frete[\s\S]{0,50}1/i
+        /FOB/i
     ];
 
-    // Verifica padrões CIF
+    // Primeiro verifica padrões específicos de FOB (destinatário)
+    for (const padrao of padroesFOB) {
+        if (padrao.test(textoFrete) || padrao.test(texto)) {
+            return cnpjDestinatario;
+        }
+    }
+
+    // Depois verifica padrões específicos de CIF (remetente)
     for (const padrao of padroesCIF) {
         if (padrao.test(textoFrete) || padrao.test(texto)) {
             return cnpjRemetente;
         }
     }
 
-    // Verifica padrões FOB
-    for (const padrao of padroesFOB) {
-        if (padrao.test(textoFrete) || padrao.test(texto)) {
-            return cnpjDestinatario;
-        }
+    // Se não encontrar nenhum padrão específico, procura por palavras-chave mais genéricas
+    if (textoFrete.includes('Destinatario') || textoFrete.includes('Destinatário')) {
+        return cnpjDestinatario;
+    }
+    
+    if (textoFrete.includes('Remetente')) {
+        return cnpjRemetente;
     }
 
     return 'Não encontrado';
