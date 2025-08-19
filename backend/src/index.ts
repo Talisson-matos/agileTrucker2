@@ -153,24 +153,25 @@ function extrairCNPJ(texto: string, posicao: number): string {
     return cnpjs[posicao - 1] ?? 'Não encontrado';
 }
 function extrairSerie(texto: string): string {
-    const match = texto.match(/(?:Série|Serie)\s+(\d+)/i);
+    const match = texto.match(/(?:Série|Serie|SERIE)\s*(\d+)/i);
     return match?.[1] ?? 'Não encontrado';
 }
 
 
 function extrairNumeroNota(texto: string): string {
-    const match = texto.match(/(?:Nº\.|Nº|Numero)\s*([\d.]+)/i);
+    const match = texto.match(/(?:Nº\.|Nº|N\.|Numero)\s*([\d.\s]+)/i);
     const numero = match?.[1];
     if (!numero) return 'Não encontrado';
 
-    const semPontos = numero.replace(/\./g, '');
-    const semZerosIniciais = semPontos.replace(/^0+/, '');
+    // Remove pontos e espaços
+    const semPontosEspacos = numero.replace(/[.\s]/g, '');
+    // Remove zeros à esquerda, mas mantém pelo menos um zero se for só zeros
+    const semZerosIniciais = semPontosEspacos.replace(/^0+/, '');
     return semZerosIniciais || '0';
 }
 
 
 function extrairChave(texto: string): string {
-   
     const match = texto.match(/\d{4}\s*\d{4}\s*\d{4}\s*\d{4}\s*\d{4}\s*\d{4}\s*\d{4}\s*\d{4}\s*\d{4}\s*\d{4}\s*\d{4}/);
     const chave = match?.[0];
 
@@ -178,59 +179,77 @@ function extrairChave(texto: string): string {
 }
 
 function extrairQuantidade(texto: string): string {
-    const match = texto.match(/(?:Quantidade|Qtd)\s+([\d.,]+)/i);
-    return match?.[1] ?? 'Não encontrado';}
+    const match = texto.match(/(?:Quantidade|Qtd)\s*([\d.,]+)/i);
+    return match?.[1] ?? 'Não encontrado';
+}
 
 function extrairPesoLiquido(texto: string): string {
-    const match = texto.match(/(?:Peso Líquido|Peso Liquido)\s+([\d.,]+)/i);
+    // Primeiro tenta encontrar "PESO LÍQUIDO"
+    let match = texto.match(/(?:PESO LÍQUIDO|Peso Líquido|Peso Liquido)\s*([\d.,]+)/i);
+    
+    // Se não encontrar, procura por "PESO BRUTO"
+    if (!match) {
+        match = texto.match(/(?:PESO BRUTO|Peso Bruto)\s*([\d.,]+)/i);
+    }
+    
     const peso = match?.[1];
-    return peso ? peso.replace(/\./g, '').replace(/,/g, '.') : 'Não encontrado';
+    if (!peso) return 'Não encontrado';
+    
+    // Remove pontos e mantém apenas vírgula
+    return peso.replace(/\./g, '');
 }
 function extrairValorNota(texto: string): string {
-    const match = texto.match(/(?:V\. TOTAL DA NOTA|V\. TOTAL|Valor Total)\s+R?\$?\s*([\d.,]+)/i);
+    const match = texto.match(/(?:V\. TOTAL DA NOTA|VALOR TOTAL DA NOTA|VALOR TOTAL DA MERCADORIA|V\. TOTAL|Valor Total)\s*R?\$?\s*([\d.,]+)/i);
     const valor = match?.[1];
     if (!valor) return 'Não encontrado';
 
-    const semPontos = valor.replace(/\./g, '');
-    const comPontoDecimal = semPontos.replace(/,/g, '.');
-    return comPontoDecimal;
+    // Remove pontos e mantém apenas vírgula
+    return valor.replace(/\./g, '');
 }
 function extrairCNPJPagadorFrete(texto: string, cnpjRemetente: string, cnpjDestinatario: string): string {
-   
+    // Procura por "FRETE" e analisa o contexto
     const textoFrete = texto.match(/FRETE[\s\S]{0,200}/i)?.[0] || '';
 
-    
+    // Padrões para CIF (Remetente paga)
     const padroesCIF = [
         /0\s*[-,]\s*CIF/i,
         /0\s*[-]\s*Por conta do Emit/i,
+        /0\s*[-]\s*Por conta do Remetente/i,
         /Por conta do Remetente/i,
+        /Remetente/i,
         /CIF/i,
         /0\s*[-,]/,
         /Modalidade do Frete[\s\S]{0,50}0/i
     ];
 
+    // Padrões para FOB (Destinatário paga)
     const padroesFOB = [
         /1\s*[-,]\s*FOB/i,
         /1\s*[-]\s*Por conta do Dest/i,
+        /1\s*[-]\s*Por conta do Destinatario/i,
         /Por conta do Destinat[aá]rio/i,
+        /Destinatario/i,
         /FOB/i,
         /1\s*[-,]/,
         /Modalidade do Frete[\s\S]{0,50}1/i
     ];
 
+    // Verifica padrões CIF
     for (const padrao of padroesCIF) {
         if (padrao.test(textoFrete) || padrao.test(texto)) {
-            return cnpjRemetente;        }
+            return cnpjRemetente;
+        }
     }
 
-   
+    // Verifica padrões FOB
     for (const padrao of padroesFOB) {
         if (padrao.test(textoFrete) || padrao.test(texto)) {
-            return cnpjDestinatario;       }
+            return cnpjDestinatario;
+        }
     }
 
-    
-    return 'Não encontrado';}
+    return 'Não encontrado';
+}
 
 const PORT = process.env.PORT || 10000;
 
