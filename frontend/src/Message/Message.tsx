@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import './Message.css'
 
 type CustomMessage = {
@@ -58,7 +58,7 @@ const mensagensFrota: MessageItem[] = [
         text: 'Prezado Sr.@, segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛',
     },
     {
-        label: 'Mensagem Monitoramento (caso houver necessidade)',
+        label: 'Mensagem Monitoramento - (caso se viagem for monitorada)',
         text: `Você será monitorado pela KOMANDO, favor dar início de viagem no teclado!\nAo fazer a parada para pernoite, lembre-se de parar em um local seguro onde haja sinal telefônico para facilitar a comunicação.\n\nCódigo SM:\n`,
     },
     {
@@ -66,7 +66,7 @@ const mensagensFrota: MessageItem[] = [
         text: 'Favor se antentar às orientações abaixo, por gentileza:',
         image: '/messageFrota.jpg',
     },
-     {
+    {
         label: 'Mensagem Final',
         text: 'Desejamos uma excelente viagem, Sr.@!\n\nEstamos à disposição. 🌍 🛣️',
     },
@@ -78,7 +78,7 @@ const mensagensTerceiro: MessageItem[] = [
         text: 'Prezado Sr.@, segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛',
     },
     {
-        label: 'Mensagem Monitoramento (caso houver necessidade)',
+        label: 'Mensagem Monitoramento - (caso se viagem for monitorada)',
         text: `Você será monitorado pela KOMANDO, favor dar início de viagem no teclado!\nAo fazer a parada para pernoite, lembre-se de parar em um local seguro onde haja sinal telefônico para facilitar a comunicação.\n\nCódigo SM:\n`,
     },
     {
@@ -101,6 +101,124 @@ const mensagensTerceiro: MessageItem[] = [
         text: 'Desejamos uma excelente viagem, Sr.@!\n\nEstamos à disposição. 🌍 🛣️',
     },
 ]
+
+// Cache para imagens já carregadas
+const imageCache = new Map<string, string>()
+
+// Componente otimizado para imagens com lazy loading, cache e compressão
+const OptimizedImage = memo(({ src, alt, className }: { src: string, alt: string, className: string }) => {
+    const [imageLoaded, setImageLoaded] = useState(false)
+    const [imageSrc, setImageSrc] = useState('')
+    const [imageError, setImageError] = useState(false)
+    const [isVisible, setIsVisible] = useState(false)
+
+    // Intersection Observer para lazy loading
+    const imageRef = useCallback((node: HTMLDivElement | null) => {
+        if (node) {
+            const observer = new IntersectionObserver(
+                ([entry]) => {
+                    if (entry.isIntersecting) {
+                        setIsVisible(true)
+                        observer.disconnect()
+                    }
+                },
+                { threshold: 0.1 }
+            )
+            observer.observe(node)
+            return () => observer.disconnect()
+        }
+    }, [])
+
+    // Função para redimensionar e comprimir imagem
+    const compressImage = useCallback((imageSrc: string): Promise<string> => {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+            const img = new Image()
+
+            img.onload = () => {
+                // Calcula dimensões mantendo proporção (max 800px width)
+                const maxWidth = 800
+                const ratio = Math.min(maxWidth / img.width, maxWidth / img.height)
+                canvas.width = img.width * ratio
+                canvas.height = img.height * ratio
+
+                // Desenha imagem redimensionada
+                ctx?.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+                // Comprime para JPEG com qualidade 85%
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85)
+                resolve(compressedDataUrl)
+            }
+
+            img.src = imageSrc
+        })
+    }, [])
+
+    useEffect(() => {
+        if (!isVisible) return
+
+        // Verifica cache primeiro
+        if (imageCache.has(src)) {
+            setImageSrc(imageCache.get(src)!)
+            setImageLoaded(true)
+            return
+        }
+
+        const img = new Image()
+        img.onload = async () => {
+            try {
+                // Comprime a imagem antes de exibir
+                const compressedSrc = await compressImage(src)
+                imageCache.set(src, compressedSrc)
+                setImageSrc(compressedSrc)
+                setImageLoaded(true)
+            } catch (error) {
+                // Se falhar na compressão, usa a imagem original
+                imageCache.set(src, src)
+                setImageSrc(src)
+                setImageLoaded(true)
+            }
+        }
+        img.onerror = () => {
+            setImageError(true)
+        }
+        img.src = src
+    }, [src, isVisible, compressImage])
+
+    if (imageError) {
+        return (
+            <div className={`${className} image-error`}>
+                <span>❌ Erro ao carregar imagem</span>
+            </div>
+        )
+    }
+
+    return (
+        <div className="image-container" ref={imageRef}>
+            {!imageLoaded && isVisible && (
+                <div className={`${className} image-placeholder`}>
+                    <div className="loading-spinner"></div>
+                    <span>Carregando...</span>
+                </div>
+            )}
+            {!isVisible && (
+                <div className={`${className} image-placeholder`}>
+                    <span>📷 Imagem será carregada quando visível</span>
+                </div>
+            )}
+            {imageLoaded && (
+                <img
+                    src={imageSrc}
+                    alt={alt}
+                    className={`${className} ${imageLoaded ? 'loaded' : ''}`}
+                    loading="lazy"
+                    decoding="async"
+                />
+            )}
+        </div>
+    )
+})
 
 const Message = () => {
     const [customMessages, setCustomMessages] = useState<CustomMessage[]>([])
@@ -150,9 +268,17 @@ const Message = () => {
         }
     }
 
+    const handleClearImageCache = () => {
+        if (window.confirm('Tem certeza que deseja limpar o cache de imagens? Isso fará com que as imagens sejam recarregadas.')) {
+            imageCache.clear()
+            // Força rerender para recarregar imagens
+            window.location.reload()
+        }
+    }
+
     const getMessagesForColumn = (column: 'padrao' | 'frota' | 'terceiro') => {
         let defaultMessages: MessageItem[] = []
-        
+
         switch (column) {
             case 'padrao':
                 defaultMessages = mensagensPadrao
@@ -165,7 +291,7 @@ const Message = () => {
                 break
         }
 
-        const customMessagesForColumn: MessageItem[] = customMessages
+        const customMessagesForColumn = customMessages
             .filter(msg => msg.column === column)
             .map(msg => ({ label: msg.label, text: msg.text, image: undefined }))
 
@@ -184,42 +310,36 @@ const Message = () => {
         <div className="message-container">
             <h2 className="message-title">📨 Mensagens do Motorista</h2>
 
-            
-
             {/* Seletor de Coluna */}
-            <div className="column-selector">             
-
-
-                <button 
+            <div className="column-selector">
+                <button
                     className={`selector-button ${activeColumn === 'padrao' ? 'active' : ''}`}
                     onClick={() => setActiveColumn('padrao')}
                 >
                     Padrão
                 </button>
-                <button 
+                <button
                     className={`selector-button ${activeColumn === 'frota' ? 'active' : ''}`}
                     onClick={() => setActiveColumn('frota')}
                 >
                     Frota
                 </button>
-                <button 
+                <button
                     className={`selector-button ${activeColumn === 'terceiro' ? 'active' : ''}`}
                     onClick={() => setActiveColumn('terceiro')}
                 >
                     Terceiro
                 </button>
 
-
                 <div className="action-buttons">
-                <button onClick={() => setShowModal(true)} className="create-button">
-                    Criar mensagem
-                </button>
-                <button onClick={handleClearStorage} className="clear-button">
-                    🗑️ Esvaziar mensagens
-                </button>
-            </div>
+                    <button onClick={() => setShowModal(true)} className="create-button">
+                        Criar mensagem
+                    </button>
+                    <button onClick={handleClearStorage} className="clear-button">
+                        🗑️ Esvaziar mensagens
+                    </button>
 
-
+                </div>
             </div>
 
             {/* Renderização Condicional da Coluna Ativa */}
@@ -228,17 +348,17 @@ const Message = () => {
                     <h3 className="column-title">{getColumnTitle(activeColumn)}</h3>
                     {getMessagesForColumn(activeColumn).map((item, index) => (
                         <div key={`${activeColumn}-${item.label ?? 'imagem'}-${index}`} className="message-item">
-                            <button 
-                                className="message-button" 
+                            <button
+                                className="message-button"
                                 onClick={() => handleCopy(item.text ?? '', item.label ?? 'imagem')}
                             >
                                 {item.label ?? ' - '}
                             </button>
                             {item.image && (
-                                <img 
-                                    src={item.image} 
-                                    alt={`Imagem de ${item.label ?? 'imagem'}`} 
-                                    className="message-image" 
+                                <OptimizedImage
+                                    src={item.image}
+                                    alt={`Imagem de ${item.label ?? 'imagem'}`}
+                                    className="message-image"
                                 />
                             )}
                         </div>
@@ -248,14 +368,17 @@ const Message = () => {
 
             {copiedLabel && <div className="copied-feedback">✅ Copiado: {copiedLabel}</div>}
 
-            
+
+            <button onClick={handleClearImageCache} className="cache-button">
+                🔄 Limpar cache de imagens
+            </button>
 
             {/* Modal */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal">
                         <h3 className="modal-title">Criar nova mensagem</h3>
-                        
+
                         <select
                             value={selectedColumn}
                             onChange={e => setSelectedColumn(e.target.value as 'padrao' | 'frota' | 'terceiro')}
@@ -273,14 +396,14 @@ const Message = () => {
                             onChange={e => setNewLabel(e.target.value)}
                             className="modal-input"
                         />
-                        
+
                         <textarea
                             placeholder="Texto da mensagem"
                             value={newText}
                             onChange={e => setNewText(e.target.value)}
                             className="modal-textarea"
                         />
-                        
+
                         <div className="modal-actions">
                             <button onClick={handleCreate} className="modal-create">
                                 Salvar
@@ -293,7 +416,7 @@ const Message = () => {
                 </div>
             )}
 
-            
+
         </div>
     )
 }

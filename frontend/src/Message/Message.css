@@ -1,291 +1,363 @@
 .message-container {
-                    max-width: 800px;
-                    margin: 0 auto;
-                    padding: 20px;
-                    font-family: Arial, sans-serif;
-                }
+                   max-width: 800px;
+                   margin: 0 auto;
+                   padding: 20px;
+                   font-family: Arial, sans-serif;
+               }
 
-                .message-title {
-                    text-align: center;
-                    color: #333;
-                    margin-bottom: 30px;
-                }
+               .message-title {
+                   text-align: center;
+                   color: #333;
+                   margin-bottom: 30px;
+               }
 
-                .column-selector {
-                    display: flex;
-                    gap: 10px;
-                    margin-bottom: 30px;
-                    justify-content: center;
-                }
+               .column-selector {
+                   display: flex;
+                   gap: 10px;
+                   margin-bottom: 30px;
+                   justify-content: center;
+               }
 
-                .selector-button {
-                    padding: 10px 20px;
-                    border: 2px solid #007bff;
-                    background: white;
-                    color: #007bff;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    transition: all 0.3s ease;
-                }
+               .selector-button {
+                   padding: 10px 20px;
+                   border: 2px solid #007bff;
+                   background: white;
+                   color: #007bff;
+                   border-radius: 8px;
+                   cursor: pointer;
+                   font-weight: bold;
+                   transition: all 0.3s ease;
+               }
 
-                .selector-button.active,
-                .selector-button:hover {
-                    background: #007bff;
-                    color: white;
-                }
+               .selector-button.active,
+               .selector-button:hover {
+                   background: #007bff;
+                   color: white;
+               }
 
-                .message-column-container {
-                    margin-bottom: 30px;
-                }
+               .message-column-container {
+                   margin-bottom: 30px;
+               }
 
-                .message-column {
-                    max-width: 100%;
-                }
+               .message-column {
+                   max-width: 100%;
+               }
 
-                .column-title {
-                    font-size: 1.2em;
-                    font-weight: bold;
-                    margin-bottom: 20px;
-                    text-align: center;
-                    padding: 10px;
-                    border-radius: 8px;
-                }
+               .column-title {
+                   font-size: 1.2em;
+                   font-weight: bold;
+                   margin-bottom: 20px;
+                   text-align: center;
+                   padding: 10px;
+                   border-radius: 8px;
+               }
 
-                .message-column.padrao .column-title {
-                    background: #e3f2fd;
-                    color: #1976d2;
-                }
+               .message-column.padrao .column-title {
+                   background: #e3f2fd;
+                   color: #1976d2;
+               }
 
-                .message-column.frota .column-title {
-                    background: #e8f5e8;
-                    color: #388e3c;
-                }
+               .message-column.frota .column-title {
+                   background: #e8f5e8;
+                   color: #388e3c;
+               }
 
-                .message-column.terceiro .column-title {
-                    background: #fff3e0;
-                    color: #f57c00;
-                }
+               .message-column.terceiro .column-title {
+                   background: #fff3e0;
+                   color: #f57c00;
+               }
 
-                .message-item {
-                    margin-bottom: 15px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                }
+               .message-item {
+                   margin-bottom: 15px;
+                   display: flex;
+                   flex-direction: column;
+                   align-items: center;
+               }
 
-                .message-button {
-                    width: 100%;
-                    padding: 12px;
-                    border: none;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    transition: all 0.3s ease;
-                    margin-bottom: 10px;
-                }
+               .message-button {
+                   width: 100%;
+                   padding: 12px;
+                   border: none;
+                   border-radius: 8px;
+                   cursor: pointer;
+                   font-weight: bold;
+                   transition: all 0.3s ease;
+                   margin-bottom: 10px;
+               }
 
-                .padrao .message-button {
-                    background: #2196f3;
-                    color: white;
-                }
+               .padrao .message-button {
+                   background: #2196f3;
+                   color: white;
+               }
 
-                .padrao .message-button:hover {
-                    background: #1976d2;
-                }
+               .padrao .message-button:hover {
+                   background: #1976d2;
+               }
 
-                .frota .message-button {
-                    background: #4caf50;
-                    color: white;
-                }
+               .frota .message-button {
+                   background: #4caf50;
+                   color: white;
+               }
 
-                .frota .message-button:hover {
-                    background: #388e3c;
-                }
+               .frota .message-button:hover {
+                   background: #388e3c;
+               }
 
-                .terceiro .message-button {
-                    background: #ff9800;
-                    color: white;
-                }
+               .terceiro .message-button {
+                   background: #ff9800;
+                   color: white;
+               }
 
-                .terceiro .message-button:hover {
-                    background: #f57c00;
-                }
+               .terceiro .message-button:hover {
+                   background: #f57c00;
+               }
 
-                .message-image {
-                    max-width: 100%;
-                    max-height: 300px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                }
+               .message-image {
+                   max-width: 100%;
+                   max-height: 300px;
+                   border-radius: 8px;
+                   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                   transition: opacity 0.3s ease;
+               }
 
-                .copied-feedback {
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    background: #4caf50;
-                    color: white;
-                    padding: 10px 20px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-                    animation: slideIn 0.3s ease;
-                }
+               .message-image.loaded {
+                   opacity: 1;
+               }
 
-                .action-buttons {
-                    display: flex;
-                    gap: 10px;
-                    justify-content: center;
-                    flex-wrap: wrap;
-                }
+               .image-container {
+                   position: relative;
+                   display: flex;
+                   justify-content: center;
+                   align-items: center;
+                   min-height: 100px;
+               }
 
-                .create-button {
-                    background: #4caf50;
-                    color: white;
-                    border: none;
-                    padding: 12px 24px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    transition: background 0.3s ease;
-                }
+               .image-placeholder {
+                   display: flex;
+                   flex-direction: column;
+                   align-items: center;
+                   justify-content: center;
+                   background: #f5f5f5;
+                   border: 2px dashed #ddd;
+                   border-radius: 8px;
+                   padding: 20px;
+                   min-height: 100px;
+                   width: 100%;
+                   max-width: 300px;
+               }
 
-                .create-button:hover {
-                    background: #388e3c;
-                }
+               .image-error {
+                   display: flex;
+                   flex-direction: column;
+                   align-items: center;
+                   justify-content: center;
+                   background: #ffebee;
+                   border: 2px solid #ffcdd2;
+                   border-radius: 8px;
+                   padding: 20px;
+                   min-height: 100px;
+                   width: 100%;
+                   max-width: 300px;
+                   color: #d32f2f;
+               }
 
-                .clear-button {
-                    background: #f44336;
-                    color: white;
-                    border: none;
-                    padding: 12px 24px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    transition: background 0.3s ease;
-                }
+               .loading-spinner {
+                   width: 30px;
+                   height: 30px;
+                   border: 3px solid #f3f3f3;
+                   border-top: 3px solid #007bff;
+                   border-radius: 50%;
+                   animation: spin 1s linear infinite;
+                   margin-bottom: 10px;
+               }
 
-                .clear-button:hover {
-                    background: #d32f2f;
-                }
+               @keyframes spin {
+                   0% { transform: rotate(0deg); }
+                   100% { transform: rotate(360deg); }
+               }
 
-                .modal-overlay {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0,0,0,0.5);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 1000;
-                }
+               .copied-feedback {
+                   position: fixed;
+                   bottom: 20px;
+                   right: 20px;
+                   background: #4caf50;
+                   color: white;
+                   padding: 10px 20px;
+                   border-radius: 8px;
+                   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                   animation: slideIn 0.3s ease;
+               }
 
-                .modal {
-                    background: white;
-                    padding: 30px;
-                    border-radius: 12px;
-                    width: 90%;
-                    max-width: 500px;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-                }
+               .action-buttons {
+                   display: flex;
+                   gap: 10px;
+                   justify-content: center;
+                   flex-wrap: wrap;
+               }
 
-                .modal-title {
-                    text-align: center;
-                    margin-bottom: 20px;
-                    color: #333;
-                }
+               .create-button {
+                   background: #4caf50;
+                   color: white;
+                   border: none;
+                   padding: 12px 24px;
+                   border-radius: 8px;
+                   cursor: pointer;
+                   font-weight: bold;
+                   transition: background 0.3s ease;
+               }
 
-                .modal-select {
-                    width: 100%;
-                    padding: 12px;
-                    border: 2px solid #ddd;
-                    border-radius: 8px;
-                    margin-bottom: 15px;
-                    font-size: 16px;
-                    background: white;
-                }
+               .create-button:hover {
+                   background: #388e3c;
+               }
 
-                .modal-input {
-                    width: 100%;
-                    padding: 12px;
-                    border: 2px solid #ddd;
-                    border-radius: 8px;
-                    margin-bottom: 15px;
-                    font-size: 16px;
-                    box-sizing: border-box;
-                }
+               .clear-button {
+                   background: #f44336;
+                   color: white;
+                   border: none;
+                   padding: 12px 24px;
+                   border-radius: 8px;
+                   cursor: pointer;
+                   font-weight: bold;
+                   transition: background 0.3s ease;
+               }
 
-                .modal-textarea {
-                    width: 100%;
-                    padding: 12px;
-                    border: 2px solid #ddd;
-                    border-radius: 8px;
-                    margin-bottom: 20px;
-                    font-size: 16px;
-                    min-height: 100px;
-                    resize: vertical;
-                    font-family: inherit;
-                    box-sizing: border-box;
-                }
+               .clear-button:hover {
+                   background: #d32f2f;
+               }
 
-                .modal-actions {
-                    display: flex;
-                    gap: 10px;
-                    justify-content: flex-end;
-                }
+               .cache-button {
+                   background: #2196f3;
+                   color: white;
+                   border: none;
+                   padding: 12px 24px;
+                   border-radius: 8px;
+                   cursor: pointer;
+                   font-weight: bold;
+                   transition: background 0.3s ease;
+               }
 
-                .modal-create {
-                    background: #4caf50;
-                    color: white;
-                    border: none;
-                    padding: 12px 24px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    transition: background 0.3s ease;
-                }
+               .cache-button:hover {
+                   background: #1976d2;
+               }
 
-                .modal-create:hover {
-                    background: #388e3c;
-                }
+               .modal-overlay {
+                   position: fixed;
+                   top: 0;
+                   left: 0;
+                   right: 0;
+                   bottom: 0;
+                   background: rgba(0,0,0,0.5);
+                   display: flex;
+                   justify-content: center;
+                   align-items: center;
+                   z-index: 1000;
+               }
 
-                .modal-cancel {
-                    background: #666;
-                    color: white;
-                    border: none;
-                    padding: 12px 24px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    transition: background 0.3s ease;
-                }
+               .modal {
+                   background: white;
+                   padding: 30px;
+                   border-radius: 12px;
+                   width: 90%;
+                   max-width: 500px;
+                   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+               }
 
-                .modal-cancel:hover {
-                    background: #555;
-                }
+               .modal-title {
+                   text-align: center;
+                   margin-bottom: 20px;
+                   color: #333;
+               }
 
-                @keyframes slideIn {
-                    from {
-                        transform: translateX(100%);
-                        opacity: 0;
-                    }
-                    to {
-                        transform: translateX(0);
-                        opacity: 1;
-                    }
-                }
+               .modal-select {
+                   width: 100%;
+                   padding: 12px;
+                   border: 2px solid #ddd;
+                   border-radius: 8px;
+                   margin-bottom: 15px;
+                   font-size: 16px;
+                   background: white;
+               }
 
-                @media (max-width: 768px) {
-                    .message-container {
-                        padding: 10px;
-                    }
-                    
-                    .column-selector {
-                        flex-direction: column;
-                    }
-                    
-                    .action-buttons {
-                        flex-direction: column;
-                    }
-                }
+               .modal-input {
+                   width: 100%;
+                   padding: 12px;
+                   border: 2px solid #ddd;
+                   border-radius: 8px;
+                   margin-bottom: 15px;
+                   font-size: 16px;
+                   box-sizing: border-box;
+               }
+
+               .modal-textarea {
+                   width: 100%;
+                   padding: 12px;
+                   border: 2px solid #ddd;
+                   border-radius: 8px;
+                   margin-bottom: 20px;
+                   font-size: 16px;
+                   min-height: 100px;
+                   resize: vertical;
+                   font-family: inherit;
+                   box-sizing: border-box;
+               }
+
+               .modal-actions {
+                   display: flex;
+                   gap: 10px;
+                   justify-content: flex-end;
+               }
+
+               .modal-create {
+                   background: #4caf50;
+                   color: white;
+                   border: none;
+                   padding: 12px 24px;
+                   border-radius: 8px;
+                   cursor: pointer;
+                   font-weight: bold;
+                   transition: background 0.3s ease;
+               }
+
+               .modal-create:hover {
+                   background: #388e3c;
+               }
+
+               .modal-cancel {
+                   background: #666;
+                   color: white;
+                   border: none;
+                   padding: 12px 24px;
+                   border-radius: 8px;
+                   cursor: pointer;
+                   font-weight: bold;
+                   transition: background 0.3s ease;
+               }
+
+               .modal-cancel:hover {
+                   background: #555;
+               }
+
+               @keyframes slideIn {
+                   from {
+                       transform: translateX(100%);
+                       opacity: 0;
+                   }
+                   to {
+                       transform: translateX(0);
+                       opacity: 1;
+                   }
+               }
+
+               @media (max-width: 768px) {
+                   .message-container {
+                       padding: 10px;
+                   }
+                   
+                   .column-selector {
+                       flex-direction: column;
+                   }
+                   
+                   .action-buttons {
+                       flex-direction: column;
+                   }
+               }
