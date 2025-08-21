@@ -1,134 +1,291 @@
 .message-container {
-  max-width: 600px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  font-family: 'Segoe UI', sans-serif;
-}
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    font-family: Arial, sans-serif;
+                }
 
-.message-title {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #333;
-}
+                .message-title {
+                    text-align: center;
+                    color: #333;
+                    margin-bottom: 30px;
+                }
 
-.button-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-}
+                .column-selector {
+                    display: flex;
+                    gap: 10px;
+                    margin-bottom: 30px;
+                    justify-content: center;
+                }
 
-.message-button {
-  padding: 10px 15px;
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
+                .selector-button {
+                    padding: 10px 20px;
+                    border: 2px solid #007bff;
+                    background: white;
+                    color: #007bff;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: all 0.3s ease;
+                }
 
-.message-button:hover {
-  transform: scale(1.05);
-}
+                .selector-button.active,
+                .selector-button:hover {
+                    background: #007bff;
+                    color: white;
+                }
 
-.custom {
-  background-color: #4caf50;
-}
+                .message-column-container {
+                    margin-bottom: 30px;
+                }
 
-.action-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
+                .message-column {
+                    max-width: 100%;
+                }
 
-.create-button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+                .column-title {
+                    font-size: 1.2em;
+                    font-weight: bold;
+                    margin-bottom: 20px;
+                    text-align: center;
+                    padding: 10px;
+                    border-radius: 8px;
+                }
 
-.clear-button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+                .message-column.padrao .column-title {
+                    background: #e3f2fd;
+                    color: #1976d2;
+                }
 
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
+                .message-column.frota .column-title {
+                    background: #e8f5e8;
+                    color: #388e3c;
+                }
 
-.modal {
-  background: white;
-  width: 90%;
-  max-width: 400px;
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-}
+                .message-column.terceiro .column-title {
+                    background: #fff3e0;
+                    color: #f57c00;
+                }
 
-.modal-input,
-.modal-textarea {
-  width: 100%;
-  padding: 8px;
-  margin: 0.5rem 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 15px;
-}
+                .message-item {
+                    margin-bottom: 15px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
 
-.modal-textarea {
-  resize: vertical;
-  height: 100px;
-}
+                .message-button {
+                    width: 100%;
+                    padding: 12px;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: all 0.3s ease;
+                    margin-bottom: 10px;
+                }
 
-.modal-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  justify-content: flex-end;
-}
+                .padrao .message-button {
+                    background: #2196f3;
+                    color: white;
+                }
 
-.modal-create {
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+                .padrao .message-button:hover {
+                    background: #1976d2;
+                }
 
-.modal-cancel {
-  background-color: #777;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+                .frota .message-button {
+                    background: #4caf50;
+                    color: white;
+                }
 
-.copied-feedback {
-  text-align: center;
-  color: green;
-  margin-bottom: 1rem;
-  font-weight: bold;
-}
+                .frota .message-button:hover {
+                    background: #388e3c;
+                }
+
+                .terceiro .message-button {
+                    background: #ff9800;
+                    color: white;
+                }
+
+                .terceiro .message-button:hover {
+                    background: #f57c00;
+                }
+
+                .message-image {
+                    max-width: 100%;
+                    max-height: 300px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                }
+
+                .copied-feedback {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: #4caf50;
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                    animation: slideIn 0.3s ease;
+                }
+
+                .action-buttons {
+                    display: flex;
+                    gap: 10px;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
+
+                .create-button {
+                    background: #4caf50;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: background 0.3s ease;
+                }
+
+                .create-button:hover {
+                    background: #388e3c;
+                }
+
+                .clear-button {
+                    background: #f44336;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: background 0.3s ease;
+                }
+
+                .clear-button:hover {
+                    background: #d32f2f;
+                }
+
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000;
+                }
+
+                .modal {
+                    background: white;
+                    padding: 30px;
+                    border-radius: 12px;
+                    width: 90%;
+                    max-width: 500px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                }
+
+                .modal-title {
+                    text-align: center;
+                    margin-bottom: 20px;
+                    color: #333;
+                }
+
+                .modal-select {
+                    width: 100%;
+                    padding: 12px;
+                    border: 2px solid #ddd;
+                    border-radius: 8px;
+                    margin-bottom: 15px;
+                    font-size: 16px;
+                    background: white;
+                }
+
+                .modal-input {
+                    width: 100%;
+                    padding: 12px;
+                    border: 2px solid #ddd;
+                    border-radius: 8px;
+                    margin-bottom: 15px;
+                    font-size: 16px;
+                    box-sizing: border-box;
+                }
+
+                .modal-textarea {
+                    width: 100%;
+                    padding: 12px;
+                    border: 2px solid #ddd;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                    font-size: 16px;
+                    min-height: 100px;
+                    resize: vertical;
+                    font-family: inherit;
+                    box-sizing: border-box;
+                }
+
+                .modal-actions {
+                    display: flex;
+                    gap: 10px;
+                    justify-content: flex-end;
+                }
+
+                .modal-create {
+                    background: #4caf50;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: background 0.3s ease;
+                }
+
+                .modal-create:hover {
+                    background: #388e3c;
+                }
+
+                .modal-cancel {
+                    background: #666;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: background 0.3s ease;
+                }
+
+                .modal-cancel:hover {
+                    background: #555;
+                }
+
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .message-container {
+                        padding: 10px;
+                    }
+                    
+                    .column-selector {
+                        flex-direction: column;
+                    }
+                    
+                    .action-buttons {
+                        flex-direction: column;
+                    }
+                }

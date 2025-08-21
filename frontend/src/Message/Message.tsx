@@ -1,30 +1,114 @@
-import  { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import './Message.css'
 
 type CustomMessage = {
     label: string
     text: string
+    column: 'padrao' | 'frota' | 'terceiro'
 }
 
-const fixedMessages: Record<string, string> = {
-    Carregamento: 'Prezado Sr.@, Assim que finalizado o carregamento e a amarração, solicitamos, por gentileza, o envio das fotos das notas fiscais para prosseguirmos com a documentação. 📸 📝',
-    Pedagio: 'Prezado Sr.@, Pedimos que solicite o Vale-Pedágio na portaria, para que possamos dar continuidade ao envio de sua documentação. 🛣️ 📄',
-    Descarga: 'Agradecemos pelo envio das informações. Procederemos com a baixa da documentação conforme recebido. ✅ 📂',
-    Notas: 'Grato pelos envios prestados, em breve retornaremos com suas documentações no grupo. 📄 ✅ ',
-    Atraso: 'Sr.@,estamos com alta demanda no momento. Mas assim que tivermos disponibilidade retornaremos no grupo com suas documentações',
-    Cadastro: 'Cadastro motorista: sendo iniciado',
-    CadMessage:'Prezado Sr.@, Para prosseguirmos com o cadastro requerido, solicitamos atenção especial à apresentação completa e legível dos seguintes documentos:📌 PIS/INSS do proprietário da ANTT vinculada ao cavalo-mecânico;🏠 Comprovante de residência atualizado e de leitura nítida;🚘 CNH atualizada, preferencialmente em versão digital com QR Code legível;📞 Contato telefônico do motorista para registro;📄 CRLV do cavalo-mecânico, emitido no ano vigente, em formato digital ou foto nítida que abranja o documento por completo;📄 CRLV do semi-reboque, também atualizado no ano vigente, em versão digital ou imagem legível e completa.Contamos com sua colaboração para garantir a agilidade e eficiência no processo de cadastramento.🤝 Atenciosamente, Equipe da Expedição',
-    CTE1: 'Prezado Sr.@, segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛',
-    CTE2: 'Desejamos uma excelente viagem, Sr.@! Estamos à disposição. 🌍 🛣️',
-    SINISTRO: 'AO OCORRER SINISTRO LIGUE PARA A CENTRAL DO SEGURO ATRAVÉS DO TELEFONE 0800 292 1234'
-
+type MessageItem = {
+    label?: string
+    text?: string
+    image?: string
 }
+
+const mensagensPadrao: MessageItem[] = [
+    {
+        label: 'Carregamento',
+        text: 'Prezado Sr.@, Assim que finalizado o carregamento e a amarração, solicitamos, por gentileza, o envio das fotos das notas fiscais para prosseguirmos com a documentação. 📸 📝',
+    },
+    {
+        label: 'Pedagio',
+        text: 'Prezado Sr.@, Pedimos que solicite o Vale-Pedágio na portaria, para que possamos dar continuidade ao envio de sua documentação. 🛣️ 📄',
+    },
+    {
+        label: 'Descarga',
+        text: 'Agradecemos pelo envio das informações. Procederemos com a baixa da documentação conforme recebido. ✅ 📂',
+    },
+    {
+        label: 'Envio de Notas',
+        text: 'Grato pelos envios prestados, em breve retornaremos com suas documentações no grupo. 📄 ✅ ',
+    },
+    {
+        label: 'Atraso',
+        text: 'Sr.@, estamos com alta demanda no momento. Mas assim que tivermos disponibilidade retornaremos no grupo com suas documentações',
+    },
+    {
+        label: 'Monitoramento',
+        text: '*PARA PROBLEMAS COM O MONITORAMENTO, ACESSE O LINK ABAIXO*\n\nhttps://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Estou%20com%20problemas%20com%20o%20MONITORAMENTO.%20Pode%20me%20ajudar,%20por%20favor?%20',
+        image: '/monitoramento.jpg',
+    },
+    {
+        label: 'Checklist',
+        text: `*SOLICITE SEU CHECKLSIT ACESSANDO O LINK ABAIXO*\n https://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Quero%20fazer%20o%20checklist%20do%20RASTREADOR%20e%20depois%20vou%20me%20apresentar%20para%20o%20carregamento`,
+        image: '/checklist.jpg',
+    },
+    {
+        image: '/nestle1.jpg',
+    },
+    {
+        image: '/nestle2.jpg',
+    },
+]
+
+const mensagensFrota: MessageItem[] = [
+    {
+        label: 'Mensagem Inicial',
+        text: 'Prezado Sr.@, segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛',
+    },
+    {
+        label: 'Mensagem Monitoramento (caso houver necessidade)',
+        text: `Você será monitorado pela KOMANDO, favor dar início de viagem no teclado!\nAo fazer a parada para pernoite, lembre-se de parar em um local seguro onde haja sinal telefônico para facilitar a comunicação.\n\nCódigo SM:\n`,
+    },
+    {
+        label: 'Orientações',
+        text: 'Favor se antentar às orientações abaixo, por gentileza:',
+        image: '/messageFrota.jpg',
+    },
+     {
+        label: 'Mensagem Final',
+        text: 'Desejamos uma excelente viagem, Sr.@!\n\nEstamos à disposição. 🌍 🛣️',
+    },
+]
+
+const mensagensTerceiro: MessageItem[] = [
+    {
+        label: 'Mensagem Inicial',
+        text: 'Prezado Sr.@, segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛',
+    },
+    {
+        label: 'Mensagem Monitoramento (caso houver necessidade)',
+        text: `Você será monitorado pela KOMANDO, favor dar início de viagem no teclado!\nAo fazer a parada para pernoite, lembre-se de parar em um local seguro onde haja sinal telefônico para facilitar a comunicação.\n\nCódigo SM:\n`,
+    },
+    {
+        label: 'Regras de Saldo',
+        text: `*REGRAS* para recebimento do saldo:\n1. *Imprimir CTe em duas vias*, uma para o cliente e uma para a SAMID Transportes.\n2. Após a descarga, *scanear o CTe completo (não somente o canhoto) frente e verso (mesmo o verso estando em branco)*, juntamente com os canhotos e encaminhar para os e-mails e endereço a seguir:`,
+        image: '/terc1.jpg',
+    },
+    {
+        label: 'Exemplo de Comprovante',
+        text: 'Segue este comprovante, como um exemplo ao envio a ser realizado para recebimento de saldo:',
+        image: '/terc2.jpg',
+    },
+    {
+        label: 'Orientações Gerais',
+        text: 'Favor se atentar às orientações abaixo, por gentileza:',
+        image: '/terc3.jpg',
+    },
+    {
+        label: 'Mensagem Final',
+        text: 'Desejamos uma excelente viagem, Sr.@!\n\nEstamos à disposição. 🌍 🛣️',
+    },
+]
 
 const Message = () => {
     const [customMessages, setCustomMessages] = useState<CustomMessage[]>([])
     const [showModal, setShowModal] = useState(false)
     const [newLabel, setNewLabel] = useState('')
     const [newText, setNewText] = useState('')
+    const [selectedColumn, setSelectedColumn] = useState<'padrao' | 'frota' | 'terceiro'>('padrao')
+    const [activeColumn, setActiveColumn] = useState<'padrao' | 'frota' | 'terceiro'>('padrao')
     const [copiedLabel, setCopiedLabel] = useState<string | null>(null)
 
     useEffect(() => {
@@ -47,7 +131,12 @@ const Message = () => {
 
     const handleCreate = () => {
         if (!newLabel || !newText) return
-        const updated = [...customMessages, { label: newLabel, text: newText }]
+        const newMessage: CustomMessage = {
+            label: newLabel,
+            text: newText,
+            column: selectedColumn
+        }
+        const updated = [...customMessages, newMessage]
         saveMessagesToLocal(updated)
         setNewLabel('')
         setNewText('')
@@ -61,46 +150,122 @@ const Message = () => {
         }
     }
 
+    const getMessagesForColumn = (column: 'padrao' | 'frota' | 'terceiro') => {
+        let defaultMessages: MessageItem[] = []
+        
+        switch (column) {
+            case 'padrao':
+                defaultMessages = mensagensPadrao
+                break
+            case 'frota':
+                defaultMessages = mensagensFrota
+                break
+            case 'terceiro':
+                defaultMessages = mensagensTerceiro
+                break
+        }
+
+        const customMessagesForColumn: MessageItem[] = customMessages
+            .filter(msg => msg.column === column)
+            .map(msg => ({ label: msg.label, text: msg.text, image: undefined }))
+
+        return [...defaultMessages, ...customMessagesForColumn]
+    }
+
+    const getColumnTitle = (column: 'padrao' | 'frota' | 'terceiro') => {
+        switch (column) {
+            case 'padrao': return 'Mensagens Padrão'
+            case 'frota': return 'Mensagens Frota'
+            case 'terceiro': return 'Mensagens Terceiro'
+        }
+    }
+
     return (
         <div className="message-container">
             <h2 className="message-title">📨 Mensagens do Motorista</h2>
 
-            <div className="button-list">
-                {/* Botões fixos */}
-                {Object.entries(fixedMessages).map(([label, text]) => (
-                    <button
-                        key={label}
-                        className="message-button"
-                        onClick={() => handleCopy(text, label)}
-                    >
-                        {label}
-                    </button>
-                ))}
+            
 
-                {/* Botões personalizados */}
-                {customMessages.map(({ label, text }, idx) => (
-                    <button
-                        key={idx}
-                        className="message-button custom"
-                        onClick={() => handleCopy(text, label)}
-                    >
-                        {label}
-                    </button>
-                ))}
+            {/* Seletor de Coluna */}
+            <div className="column-selector">             
+
+
+                <button 
+                    className={`selector-button ${activeColumn === 'padrao' ? 'active' : ''}`}
+                    onClick={() => setActiveColumn('padrao')}
+                >
+                    Padrão
+                </button>
+                <button 
+                    className={`selector-button ${activeColumn === 'frota' ? 'active' : ''}`}
+                    onClick={() => setActiveColumn('frota')}
+                >
+                    Frota
+                </button>
+                <button 
+                    className={`selector-button ${activeColumn === 'terceiro' ? 'active' : ''}`}
+                    onClick={() => setActiveColumn('terceiro')}
+                >
+                    Terceiro
+                </button>
+
+
+                <div className="action-buttons">
+                <button onClick={() => setShowModal(true)} className="create-button">
+                    Criar mensagem
+                </button>
+                <button onClick={handleClearStorage} className="clear-button">
+                    🗑️ Esvaziar mensagens
+                </button>
+            </div>
+
+
+            </div>
+
+            {/* Renderização Condicional da Coluna Ativa */}
+            <div className="message-column-container">
+                <div className={`message-column ${activeColumn}`}>
+                    <h3 className="column-title">{getColumnTitle(activeColumn)}</h3>
+                    {getMessagesForColumn(activeColumn).map((item, index) => (
+                        <div key={`${activeColumn}-${item.label ?? 'imagem'}-${index}`} className="message-item">
+                            <button 
+                                className="message-button" 
+                                onClick={() => handleCopy(item.text ?? '', item.label ?? 'imagem')}
+                            >
+                                {item.label ?? ' - '}
+                            </button>
+                            {item.image && (
+                                <img 
+                                    src={item.image} 
+                                    alt={`Imagem de ${item.label ?? 'imagem'}`} 
+                                    className="message-image" 
+                                />
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
 
             {copiedLabel && <div className="copied-feedback">✅ Copiado: {copiedLabel}</div>}
 
-            <div className="action-buttons">
-                <button onClick={() => setShowModal(true)} className="create-button">Criar mensagem</button>
-                <button onClick={handleClearStorage} className="clear-button">🗑️ Esvaziar mensagens</button>
-            </div>
+            
 
             {/* Modal */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        <h3>Criar nova mensagem</h3>
+                        <h3 className="modal-title">Criar nova mensagem</h3>
+                        
+                        <select
+                            value={selectedColumn}
+                            onChange={e => setSelectedColumn(e.target.value as 'padrao' | 'frota' | 'terceiro')}
+                            className="modal-select"
+                        >
+                            <option value="padrao">Coluna Padrão</option>
+                            <option value="frota">Coluna Frota</option>
+                            <option value="terceiro">Coluna Terceiro</option>
+                        </select>
+
                         <input
                             type="text"
                             placeholder="Nome do botão"
@@ -108,20 +273,27 @@ const Message = () => {
                             onChange={e => setNewLabel(e.target.value)}
                             className="modal-input"
                         />
+                        
                         <textarea
                             placeholder="Texto da mensagem"
                             value={newText}
                             onChange={e => setNewText(e.target.value)}
                             className="modal-textarea"
                         />
-
+                        
                         <div className="modal-actions">
-                            <button onClick={handleCreate} className="modal-create">Salvar</button>
-                            <button onClick={() => setShowModal(false)} className="modal-cancel">Cancelar</button>
+                            <button onClick={handleCreate} className="modal-create">
+                                Salvar
+                            </button>
+                            <button onClick={() => setShowModal(false)} className="modal-cancel">
+                                Cancelar
+                            </button>
                         </div>
                     </div>
                 </div>
             )}
+
+            
         </div>
     )
 }
