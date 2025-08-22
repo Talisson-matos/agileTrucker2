@@ -178,7 +178,7 @@ const Agile: React.FC = () => {
         {buttons.map((btn, index) => (
           <button key={index} className="clip-btn" onClick={() => handleClick(index)}>
             <span className="label">{btn.label}</span>:{" "}
-            <span className="content">{btn.content ? btn.content : "[vazio]"}</span>
+           <span className="content">{btn.content || "[vazio]"}</span>
           </button>
         ))}
       </div>
