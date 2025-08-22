@@ -1,69 +1,74 @@
 .container {
   font-family: 'Segoe UI', Tahoma, sans-serif;
-  padding: 25px;
-  background-color: #f9f9f9;
-  border-radius: 12px;
-  max-width: 800px;
-  margin: auto;
-  box-shadow: 0 0 12px rgba(0,0,0,0.05);
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  max-width: 900px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
   text-align: center;
+  color: #333;
   margin-bottom: 20px;
+  font-size: 24px;
 }
 
 .button-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   justify-content: center;
 }
 
 .clip-btn {
-  padding: 12px 16px;
+  padding: 10px 15px;
   border: 2px solid #007bff;
-  background-color: #e1f0ff;
-  border-radius: 10px;
+  background-color: #e9f1fa;
+  border-radius: 8px;
   cursor: pointer;
-  min-width: 160px;
-  font-weight: bold;
+  font-weight: 500;
   transition: background-color 0.2s ease;
+  min-width: 150px;
+  text-align: left;
 }
 
 .clip-btn:hover {
-  background-color: #cce4ff;
+  background-color: #d0e0f5;
 }
 
 .clip-btn .label {
-  color: #333;
+  color: #222;
 }
 
 .clip-btn .content {
-  color: #555;
+  color: #444;
 }
 
 .custom-creator {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-top: 25px;
+  margin-top: 20px;
 }
 
 .custom-creator input {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  min-width: 180px;
+  min-width: 200px;
+  font-size: 14px;
 }
 
 .custom-creator button {
-  padding: 10px;
+  padding: 10px 15px;
   border-radius: 8px;
   background-color: #28a745;
   color: white;
   border: none;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .custom-creator button:hover {
@@ -82,11 +87,169 @@ h2 {
   margin-top: 15px;
   text-align: center;
   color: #17a2b8;
-  font-weight: bold;
+  font-weight: 500;
   animation: fadeIn 0.4s ease-in-out;
 }
+
+.generator-control {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.open-modal-btn {
+  padding: 12px 18px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  font-size: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.open-modal-btn:hover {
+  background-color: #0056b3;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  text-align: center;
+  animation: slideDown 0.3s ease;
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.modal-buttons button {
+  padding: 10px 14px;
+  border: 2px solid #28a745;
+  background-color: #e8f5e9;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.modal-buttons button:hover {
+  background-color: #d4e9d4;
+}
+
+.generated-list {
+  margin-top: 15px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.generated-item {
+  display: flex;
+  justify-content: space-between;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  align-items: center;
+}
+
+.generated-item span {
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+}
+
+.generated-item button {
+  padding: 5px 10px;
+  font-size: 13px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.generated-item button:hover {
+  background: #0056b3;
+}
+
+.empty {
+  color: #888;
+  font-size: 14px;
+}
+
+.close-modal-btn {
+  margin-top: 20px;
+  padding: 10px 16px;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.close-modal-btn:hover {
+  background-color: #b02a37;
+}
+
+.cleaner-box {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #aad7dd;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.cleaner-box h4 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 16px;
+}
+
+.cleaner-box input {
+  padding: 10px;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  width: 80%;
+  font-size: 14px;
+  text-align: center;
+}
+
 
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
