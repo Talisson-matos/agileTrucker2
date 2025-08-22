@@ -1,66 +1,52 @@
+// ...existing code...
 import React, { useState } from 'react'
 import './Formatador.css'
 
 const Formatador = () => {
-  const [entrada, setEntrada] = useState('')
-  const [limpo, setLimpo] = useState('')
-  const [copiado, setCopiado] = useState(false)
   const [mostrarNotas, setMostrarNotas] = useState(false)
   const [mostrarCnpj, setMostrarCnpj] = useState(false)
   const [textoTransformado, setTextoTransformado] = useState('')
   const [textoCopiado, setTextoCopiado] = useState(false)
+  const [feedback, setFeedback] = useState('')
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const original = e.target.value
-    const somenteNumeros = original.replace(/[^\d]/g, '')
-    setEntrada(original)
-    setLimpo(somenteNumeros)
-    setCopiado(false)
-  }
-
-  const copiar = () => {
-    navigator.clipboard.writeText(limpo)
-    setCopiado(true)
-    setTimeout(() => setCopiado(false), 1500)
-  }
-
-  const limpar = () => {
-    setEntrada('')
-    setLimpo('')
-    setCopiado(false)
+  // Função para notificar usuário
+  const notify = (msg: string) => {
+    setFeedback(msg)
+    setTimeout(() => setFeedback(''), 1500)
   }
 
   const abrirLink = (url: string) => {
     window.open(url, '_blank')
   }
 
+  // NOVO: Input que limpa e copia automaticamente ao colar
+  const handlePasteInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value
+    // Remove espaços, traços, pontos e barras
+    let cleaned = val.replace(/[\s.\-\/]/g, "")
+    if (cleaned) {
+      try {
+        await navigator.clipboard.writeText(cleaned)
+        notify(`✅ Copiado: ${cleaned}`)
+      } catch {
+        notify("❌ Falha ao copiar número.")
+      }
+    }
+    e.target.value = ""
+  }
+
   return (
     <div className="formatador-container">
-      <h2>🔎 Formatador de Chaves e CNPJ</h2>
-
-      <textarea
-        value={entrada}
-        onChange={handleChange}
-        className="formatador-textarea"
-        style={{ resize: 'none' }}
-      />
-
-      {limpo && (
-        <>
-          <div className="formatador-resultado">
-            <strong>🔢 Resultado:</strong>
-            <p>{limpo}</p>
-          </div>
-
-          <div className="formatador-botoes">
-            <button onClick={copiar} className="formatador-botao">📋 Copiar</button>
-            <button onClick={limpar} className="formatador-botao limpar">🧹 Limpar</button>
-          </div>
-
-          {copiado && <span className="formatador-feedback">✅ Copiado!</span>}
-        </>
-      )}
+      {/* Input para limpar e copiar número */}
+      <div className="cleaner-box">
+        <h4>🔎 Limpar Número</h4>
+        <input
+          type="text"
+          placeholder="Cole aqui um número..."
+          onChange={handlePasteInput}
+        />
+        {feedback && <span className="formatador-feedback">{feedback}</span>}
+      </div>
 
       <h3>🔗 Links úteis</h3>
 
@@ -141,8 +127,6 @@ const Formatador = () => {
 
         {textoCopiado && <span className="formatador-feedback">✅ Texto copiado!</span>}
       </div>
-
-
     </div>
   )
 }

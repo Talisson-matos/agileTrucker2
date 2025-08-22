@@ -30,6 +30,8 @@ const Agile: React.FC = () => {
 
   const [generatedFiles, setGeneratedFiles] = useState<string[]>([]);
 
+  //////////////////////////
+
   const handleClick = async (index: number) => {
     const button = buttons[index];
     const updated = [...buttons];
@@ -64,6 +66,8 @@ const Agile: React.FC = () => {
       .then(() => notify(`✅ Copiado: ${text}`))
       .catch(() => notify("❌ Falha ao copiar."));
   };
+
+  //////////////////////////
 
   const generateGroup = (group: "emissoes" | "cadastro") => {
     const motorista = buttons.find((btn) => btn.label === "Motorista")?.content || "";
@@ -127,28 +131,7 @@ const Agile: React.FC = () => {
 
   return (
     <div className="container">
-      <h2>🪄 Agile</h2>
-
-      {/* Input para limpar e copiar número */}
-      <div className="cleaner-box">
-        <h4>🔎 Limpar Número</h4>
-        <input
-          type="text"
-          placeholder="Cole aqui um número..."
-          onChange={(e) => {
-            let val = e.target.value;
-            // Remove espaços, traços, pontos e barras
-            let cleaned = val.replace(/[\s.\-\/]/g, "");
-            if (cleaned) {
-              navigator.clipboard
-                .writeText(cleaned)
-                .then(() => notify(`✅ Copiado: ${cleaned}`))
-                .catch(() => notify("❌ Falha ao copiar número."));
-            }
-             e.target.value = "";
-          }}
-        />
-      </div>
+      <h2>🪄 Agile</h2>    
 
 
       <div className="button-container">
