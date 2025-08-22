@@ -96,7 +96,7 @@ const Agile: React.FC = () => {
     if (group === "cadastro") {
       if (cavalo && motorista) files.push(`(CAVALO - ${cavalo}) • ${motorista}`);
       if (reboque && motorista) files.push(`(REBOQUE - ${reboque}) • ${motorista}`);
-      if (reboque2 && motorista) files.push(`(REBOQUE - ${reboque2}) • ${motorista}`);
+      if (reboque2 && motorista) files.push(`(REBOQUE2 - ${reboque2}) • ${motorista}`);
       if (dolly && motorista) files.push(`(DOLLY - ${dolly}) • ${motorista}`);
       if (motorista) files.push(`CNH • ${motorista}`);
     }
@@ -131,6 +131,8 @@ const Agile: React.FC = () => {
       { label: "ANTT", content: "" },
       { label: "Contato", content: "" },
       { label: "Chave", content: "" },
+      { label: "Liberação", content: "" },
+      { label: "SM", content: "" },
     ]);
     notify("🧹 Botões e valores resetados!");
   };
