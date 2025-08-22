@@ -23,9 +23,10 @@ const Agile: React.FC = () => {
     { label: "Chave", content: "" },
   ]);
   const [customLabel, setCustomLabel] = useState("");
-  const [notification, setNotification] = useState("");
+  const [notification] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [generatedFiles, setGeneratedFiles] = useState<string[]>([]);
+  const [feedback, setFeedback] = useState('')
 
   const handleClick = async (index: number) => {
     const button = buttons[index];
@@ -60,10 +61,7 @@ const Agile: React.FC = () => {
   };
   
 
-  const notify = (msg: string) => {
-    setNotification(msg);
-    setTimeout(() => setNotification(""), 2000);
-  };
+ 
 
   const copyGenerated = (text: string) => {
     navigator.clipboard
@@ -94,11 +92,11 @@ const Agile: React.FC = () => {
     }
 
     if (group === "cadastro") {
-      if (cavalo && motorista) files.push(`(CAVALO - ${cavalo}) - ${motorista}`);
-      if (reboque && motorista) files.push(`(REBOQUE - ${reboque}) - ${motorista}`);
-      if (reboque2 && motorista) files.push(`(REBOQUE - ${reboque2}) - ${motorista}`);
-      if (dolly && motorista) files.push(`(DOLLY - ${dolly}) - ${motorista}`);
-      if (motorista) files.push(`(CNH - ${motorista})`);
+      if (cavalo && motorista) files.push(`(CAVALO - ${cavalo}) • ${motorista}`);
+      if (reboque && motorista) files.push(`(REBOQUE - ${reboque}) • ${motorista}`);
+      if (reboque2 && motorista) files.push(`(REBOQUE - ${reboque2}) • ${motorista}`);
+      if (dolly && motorista) files.push(`(DOLLY - ${dolly}) • ${motorista}`);
+      if (motorista) files.push(`CNH • ${motorista}`);
     }
 
     setGeneratedFiles(files);
@@ -135,9 +133,38 @@ const Agile: React.FC = () => {
     notify("🧹 Botões e valores resetados!");
   };
 
+  const notify = (msg: string) => {
+    setFeedback(msg)
+    setTimeout(() => setFeedback(''), 1500)
+  }
+
+  const handlePasteInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      let val = e.target.value
+      // Remove espaços, traços, pontos e barras
+      let cleaned = val.replace(/[\s.\-\/]/g, "")
+      if (cleaned) {
+        try {
+          await navigator.clipboard.writeText(cleaned)
+          notify(`✅ Copiado: ${cleaned}`)
+        } catch {
+          notify("❌ Falha ao copiar número.")
+        }
+      }
+      e.target.value = ""
+    }
+
   return (
     <div className="container">
       <h2>🪄 Agile</h2>
+      <div className="cleaner-box">
+        <h4>🔎 Limpar Número</h4>
+        <input
+          type="text"
+          placeholder="Cole aqui um número..."
+          onChange={handlePasteInput}
+        />
+        {feedback && <span className="formatador-feedback">{feedback}</span>}
+      </div>
 
       <div className="button-container">
         {buttons.map((btn, index) => (

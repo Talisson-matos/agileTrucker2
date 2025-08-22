@@ -218,6 +218,51 @@ h2 {
   background-color: #b02a37;
 }
 
+.cleaner-box {
+  background-color: #ffffff;
+  border: 2px solid #007bff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 30px auto;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1);
+  text-align: center;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.cleaner-box h4 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #007bff;
+  font-weight: 600;
+}
+
+.cleaner-box input {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.cleaner-box input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+.formatador-feedback {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #28a745;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
