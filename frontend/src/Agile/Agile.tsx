@@ -21,6 +21,8 @@ const Agile: React.FC = () => {
     { label: "ANTT", content: "" },
     { label: "Contato", content: "" },
     { label: "Chave", content: "" },
+    { label: "Liberação", content: "" },
+    { label: "SM", content: "" },
   ]);
   const [customLabel, setCustomLabel] = useState("");
   const [notification] = useState("");

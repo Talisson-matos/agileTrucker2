@@ -216,6 +216,7 @@ font-style: italic;
 /* Conteúdo do modal */
 .modal-content {
   padding: 1rem;
+  width: 100%;
 }
 
 .modal-input {
