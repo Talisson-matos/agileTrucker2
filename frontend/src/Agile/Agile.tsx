@@ -21,8 +21,6 @@ const Agile: React.FC = () => {
     { label: "ANTT", content: "" },
     { label: "Contato", content: "" },
     { label: "Chave", content: "" },
-    { label: "Liberação", content: "" },
-    { label: "SM", content: "" },
   ]);
   const [customLabel, setCustomLabel] = useState("");
   const [notification, setNotification] = useState("");
@@ -30,43 +28,28 @@ const Agile: React.FC = () => {
 
   const [generatedFiles, setGeneratedFiles] = useState<string[]>([]);
 
-  //////////////////////////
-  const solicitarPermissaoClipboard = async () => {
-  try {
-    const result = await navigator.permissions.query({ name: "clipboard-read" as PermissionName });
-    if (result.state === "denied") {
-      alert("❌ Permissão de leitura da área de transferência foi negada. Vá nas configurações do navegador e permita.");
-    }
-  } catch (err) {
-    console.warn("Não foi possível verificar permissões:", err);
-  }
-};
-
-
   const handleClick = async (index: number) => {
-  const button = buttons[index];
-  const updated = [...buttons];
+    const button = buttons[index];
+    const updated = [...buttons];
 
-  if (button.content === "") {
-    try {
-      await solicitarPermissaoClipboard(); // ⬅️ aqui
-      const text = await navigator.clipboard.readText();
-      updated[index].content = text;
-      setButtons(updated);
-      notify(`✅ Valor colado em ${button.label}`);
-    } catch {
-      notify("❌ Falha ao colar da área de transferência.");
+    if (button.content === "") {
+      try {
+        const text = await navigator.clipboard.readText();
+        updated[index].content = text;
+        setButtons(updated);
+        notify(`✅ Valor colado em ${button.label}`);
+      } catch {
+        notify("❌ Falha ao colar da área de transferência.");
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(button.content);
+        notify(`✅ Copiado: ${button.label}`);
+      } catch {
+        notify("❌ Falha ao copiar para área de transferência.");
+      }
     }
-  } else {
-    try {
-      await navigator.clipboard.writeText(button.content);
-      notify(`✅ Copiado: ${button.label}`);
-    } catch {
-      notify("❌ Falha ao copiar para área de transferência.");
-    }
-  }
-};
-
+  };
 
   const notify = (msg: string) => {
     setNotification(msg);
@@ -99,11 +82,11 @@ const Agile: React.FC = () => {
     }
 
     if (group === "cadastro") {
-      if (cavalo && motorista) files.push(`(CAVALO - ${cavalo}) • ${motorista}`);
-      if (reboque && motorista) files.push(`(REBOQUE - ${reboque}) • ${motorista}`);
-      if (reboque2 && motorista) files.push(`(REBOQUE - ${reboque2}) • ${motorista}`);
-      if (dolly && motorista) files.push(`(DOLLY - ${dolly}) • ${motorista}`);
-      if (motorista) files.push(`CNH • ${motorista}`);
+      if (cavalo && motorista) files.push(`(CAVALO - ${cavalo}) - ${motorista}`);
+      if (reboque && motorista) files.push(`(REBOQUE - ${reboque}) - ${motorista}`);
+      if (reboque2 && motorista) files.push(`(REBOQUE - ${reboque2}) - ${motorista}`);
+      if (dolly && motorista) files.push(`(DOLLY - ${dolly}) - ${motorista}`);
+      if (motorista) files.push(`(CNH - ${motorista})`);
     }
 
     setGeneratedFiles(files);
@@ -142,8 +125,7 @@ const Agile: React.FC = () => {
 
   return (
     <div className="container">
-      <h2>🪄 Agile</h2>    
-
+      <h2>🪄 Agile</h2>
 
       <div className="button-container">
         {buttons.map((btn, index) => (
@@ -169,7 +151,7 @@ const Agile: React.FC = () => {
 
       <div className="generator-control">
         <button className="open-modal-btn" onClick={() => setIsModalOpen(true)}>
-          📂 Gerar Nomes de Arquivos
+          📂 Gerar Arquivos
         </button>
       </div>
 
