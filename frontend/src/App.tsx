@@ -6,10 +6,11 @@ import { FaSun } from "react-icons/fa6";
 import { ImRocket } from "react-icons/im";
 import { RiKey2Fill } from "react-icons/ri";
 import { MdMessage } from "react-icons/md";
+import OptimizedImage from './components/OptimizedImage';
 
 
 function App() {
-// modo claro e escuro
+  // modo claro e escuro
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ function App() {
 
   // Estado Obs. CTe
   const [obsList, setObsList] = useState<string[]>([])
-  
+
   const [cteSubmitted, setCteSubmitted] = useState(false)
   const [cteCopied, setCteCopied] = useState(false)
 
@@ -123,7 +124,7 @@ function App() {
   const openCteModal = () => {
     setShowCteModal(true)
     setObsList([])
-    
+
     setCteSubmitted(false)
     setCteCopied(false)
   }
@@ -147,7 +148,7 @@ function App() {
 
   const clearCte = () => {
     setObsList([])
-    
+
     setCteSubmitted(false)
     setCteCopied(false)
     setCreditoPresumido('')
@@ -157,8 +158,8 @@ function App() {
     if (!resultado) return;
 
     const parts = [
-      ...obsList.map(text => `- ${text}`),    
-        '- AO OCORRER SINISTRO LIGUE PARA A CENTRAL DO SEGURO ATRAVÉS DO TELEFONE 0800 772 2016',      
+      ...obsList.map(text => `- ${text}`),
+      '- AO OCORRER SINISTRO LIGUE PARA A CENTRAL DO SEGURO ATRAVÉS DO TELEFONE 0800 772 2016',
       creditoPresumido ? `- ${creditoPresumido}` : '',
       `- VALOR PRESTAÇÃO: ${formatarRS(parseFloat(frete.replace(',', '.')))} - VALOR ICMS(${taxa}%): ${formatarRS(resultado.valorICMS)}`,
       `- CREDITO PRESUMIDO: ${formatarRS(resultado.creditoPresumido)} - ICMS A RECOLHER: ${formatarRS(resultado.icmsRecolher)}`,
@@ -172,7 +173,7 @@ function App() {
 
   return (
     <div className="container">
-       <button
+      <button
         onClick={() => setIsDark(prev => !prev)}
         style={{
           padding: '10px 20px',
@@ -185,14 +186,14 @@ function App() {
         }}
 
       >
-        {isDark ? <BsMoonStarsFill />  : <FaSun />}
+        {isDark ? <BsMoonStarsFill /> : <FaSun />}
       </button>
 
 
       <div className="container_links">
         <Link className="message_trucker" to="/message">
           <button className="styled-button">
-            <MdMessage /> Mensagem 
+            <MdMessage /> Mensagem
           </button>
         </Link>
 
@@ -218,7 +219,16 @@ function App() {
 
 
 
-      <h2 className="titulo"> <img className='agile_trucker' src="/Copilot_20250813_020239-removebg-preview.png" alt="truck" /> Cálculo de ICMS</h2>
+      <h2 className="titulo">
+        <OptimizedImage
+          src="/Copilot_20250813_020239-removebg-preview.png"
+          alt="truck"
+          className="agile_trucker"
+          width={40}
+          height={25}
+        />
+
+        Cálculo de ICMS</h2>
 
       <div className="formulario">
         <input
@@ -339,7 +349,7 @@ function App() {
                     <option value="CREDITO PRESUMIDO - INCISO § 3º DO ARTIGO 11 DO ANEXO III DO RICMS-SP">SP - SÃO PAULO</option>
                   </select>
 
-                  
+
 
                   <div className="modal-button-group">
                     <button onClick={() => setGuiaSubmitted(true)} className="botao calcular">
@@ -396,7 +406,7 @@ function App() {
                       Criar Input
                     </button>
 
-                   
+
 
                   </div>
 
@@ -453,11 +463,11 @@ function App() {
                   {obsList.map((obs, idx) => (
                     <p key={idx}>{obs}</p>
                   ))}
-                 
-                    <p>
-                      AO OCORRER SINISTRO LIGUE PARA A CENTRAL DO SEGURO ATRAVÉS DO TELEFONE 0800 772 2016
-                    </p>
-                 
+
+                  <p>
+                    AO OCORRER SINISTRO LIGUE PARA A CENTRAL DO SEGURO ATRAVÉS DO TELEFONE 0800 772 2016
+                  </p>
+
                   {creditoPresumido && <p> {creditoPresumido}</p>}
                   <p>
                     VALOR PRESTAÇÃO: {formatarRS(parseFloat(frete.replace(',', '.')))} - VALOR
