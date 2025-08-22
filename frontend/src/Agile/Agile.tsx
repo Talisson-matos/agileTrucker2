@@ -67,8 +67,6 @@ const Agile: React.FC = () => {
       .catch(() => notify("❌ Falha ao copiar."));
   };
 
-  //////////////////////////
-
   const generateGroup = (group: "emissoes" | "cadastro") => {
     const motorista = buttons.find((btn) => btn.label === "Motorista")?.content || "";
     const cte = buttons.find((btn) => btn.label === "CTe")?.content || "";
