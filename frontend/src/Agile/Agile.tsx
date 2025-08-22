@@ -31,29 +31,42 @@ const Agile: React.FC = () => {
   const [generatedFiles, setGeneratedFiles] = useState<string[]>([]);
 
   //////////////////////////
+  const solicitarPermissaoClipboard = async () => {
+  try {
+    const result = await navigator.permissions.query({ name: "clipboard-read" as PermissionName });
+    if (result.state === "denied") {
+      alert("❌ Permissão de leitura da área de transferência foi negada. Vá nas configurações do navegador e permita.");
+    }
+  } catch (err) {
+    console.warn("Não foi possível verificar permissões:", err);
+  }
+};
+
 
   const handleClick = async (index: number) => {
-    const button = buttons[index];
-    const updated = [...buttons];
+  const button = buttons[index];
+  const updated = [...buttons];
 
-    if (button.content === "") {
-      try {
-        const text = await navigator.clipboard.readText();
-        updated[index].content = text;
-        setButtons(updated);
-        notify(`✅ Valor colado em ${button.label}`);
-      } catch {
-        notify("❌ Falha ao colar da área de transferência.");
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(button.content);
-        notify(`✅ Copiado: ${button.label}`);
-      } catch {
-        notify("❌ Falha ao copiar para área de transferência.");
-      }
+  if (button.content === "") {
+    try {
+      await solicitarPermissaoClipboard(); // ⬅️ aqui
+      const text = await navigator.clipboard.readText();
+      updated[index].content = text;
+      setButtons(updated);
+      notify(`✅ Valor colado em ${button.label}`);
+    } catch {
+      notify("❌ Falha ao colar da área de transferência.");
     }
-  };
+  } else {
+    try {
+      await navigator.clipboard.writeText(button.content);
+      notify(`✅ Copiado: ${button.label}`);
+    } catch {
+      notify("❌ Falha ao copiar para área de transferência.");
+    }
+  }
+};
+
 
   const notify = (msg: string) => {
     setNotification(msg);
