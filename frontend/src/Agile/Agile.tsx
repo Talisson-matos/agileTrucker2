@@ -28,29 +28,37 @@ const Agile: React.FC = () => {
   const [generatedFiles, setGeneratedFiles] = useState<string[]>([]);
 
   const handleClick = async (index: number) => {
-  const button = buttons[index];
-  const updated = [...buttons];
+    const button = buttons[index];
+    const updated = [...buttons];
 
-  if (button.content === "") {
-    try {
-      const text = await navigator.clipboard.readText();
-      updated[index].content = text;
-      setButtons(updated);
-      notify(`✅ Valor colado em ${button.label}`);
-    } catch (error) {
-      console.error(`[Clipboard Error] Falha ao colar conteúdo no botão "${button.label}":`, error);
-      notify("❌ Falha ao colar da área de transferência.");
+    if (button.content === "") {
+      try {
+        const permissionStatus = await navigator.permissions.query({ name: "clipboard-read" as PermissionName });
+        if (permissionStatus.state === "denied") {
+          console.warn(`[Clipboard Warning] Permissão negada para leitura da área de transferência.`);
+          notify("⚠️ Permissão negada para leitura da área de transferência.");
+          return;
+        }
+
+        const text = await navigator.clipboard.readText();
+        updated[index].content = text;
+        setButtons(updated);
+        notify(`✅ Valor colado em ${button.label}`);
+      } catch (error) {
+        console.error(`[Clipboard Error] Falha ao colar conteúdo no botão "${button.label}":`, error);
+        notify("❌ Falha ao colar da área de transferência.");
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(button.content);
+        notify(`✅ Copiado: ${button.label}`);
+      } catch (error) {
+        console.error(`[Clipboard Error] Falha ao copiar conteúdo do botão "${button.label}":`, error);
+        notify("❌ Falha ao copiar para área de transferência.");
+      }
     }
-  } else {
-    try {
-      await navigator.clipboard.writeText(button.content);
-      notify(`✅ Copiado: ${button.label}`);
-    } catch (error) {
-      console.error(`[Clipboard Error] Falha ao copiar conteúdo do botão "${button.label}":`, error);
-      notify("❌ Falha ao copiar para área de transferência.");
-    }
-  }
-};
+  };
+  
 
   const notify = (msg: string) => {
     setNotification(msg);
@@ -58,14 +66,14 @@ const Agile: React.FC = () => {
   };
 
   const copyGenerated = (text: string) => {
-  navigator.clipboard
-    .writeText(text)
-    .then(() => notify(`✅ Copiado: ${text}`))
-    .catch((error) => {
-      console.error(`[Clipboard Error] Falha ao copiar texto gerado "${text}":`, error);
-      notify("❌ Falha ao copiar.");
-    });
-};
+    navigator.clipboard
+      .writeText(text)
+      .then(() => notify(`✅ Copiado: ${text}`))
+      .catch((error) => {
+        console.error(`[Clipboard Error] Falha ao copiar texto gerado "${text}":`, error);
+        notify("❌ Falha ao copiar.");
+      });
+  };
 
   const generateGroup = (group: "emissoes" | "cadastro") => {
     const motorista = buttons.find((btn) => btn.label === "Motorista")?.content || "";
