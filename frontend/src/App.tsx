@@ -217,9 +217,8 @@ function App() {
 
       </div>
 
+      <div className="title_trucker">
 
-
-      <h2 className="titulo">
         <OptimizedImage
           src="/Copilot_20250813_020239-removebg-preview.png"
           alt="truck"
@@ -227,9 +226,12 @@ function App() {
           width={40}
           height={25}
         />
+        <h2 className="titulo">
+          Cálculo de ICMS</h2>
+      </div>
 
-        Cálculo de ICMS</h2>
-        
+
+
 
       <div className="formulario">
         <input

@@ -31,6 +31,10 @@ const Agile: React.FC = () => {
   const [feedback, setFeedback] = useState('')
 
   const handleClick = async (index: number) => {
+    if (!navigator.clipboard) {
+      notify("⚠️ Navegador não suporta API de área de transferência.");
+      return;
+    }
     const button = buttons[index];
     const updated = [...buttons];
 
@@ -61,9 +65,9 @@ const Agile: React.FC = () => {
       }
     }
   };
-  
 
- 
+
+
 
   const copyGenerated = (text: string) => {
     navigator.clipboard
@@ -143,19 +147,19 @@ const Agile: React.FC = () => {
   }
 
   const handlePasteInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      let val = e.target.value
-      // Remove espaços, traços, pontos e barras
-      let cleaned = val.replace(/[\s.\-\/]/g, "")
-      if (cleaned) {
-        try {
-          await navigator.clipboard.writeText(cleaned)
-          notify(`✅ Copiado: ${cleaned}`)
-        } catch {
-          notify("❌ Falha ao copiar número.")
-        }
+    let val = e.target.value
+    // Remove espaços, traços, pontos e barras
+    let cleaned = val.replace(/[\s.\-\/]/g, "")
+    if (cleaned) {
+      try {
+        await navigator.clipboard.writeText(cleaned)
+        notify(`✅ Copiado: ${cleaned}`)
+      } catch {
+        notify("❌ Falha ao copiar número.")
       }
-      e.target.value = ""
     }
+    e.target.value = ""
+  }
 
   return (
     <div className="container">
@@ -174,7 +178,7 @@ const Agile: React.FC = () => {
         {buttons.map((btn, index) => (
           <button key={index} className="clip-btn" onClick={() => handleClick(index)}>
             <span className="label">{btn.label}</span>:{" "}
-            <span className="content">{btn.content || "[vazio]"}</span>
+            <span className="content">{btn.content ? btn.content : "[vazio]"}</span>
           </button>
         ))}
       </div>
@@ -219,8 +223,9 @@ const Agile: React.FC = () => {
                   <button onClick={() => copyGenerated(file)}>Copiar</button>
                 </div>
               ))}
-            </div>
 
+            </div>
+            {feedback && <span className="formatador-feedback">{feedback}</span>}
             <button className="close-modal-btn" onClick={() => setIsModalOpen(false)}>
               Fechar
             </button>
