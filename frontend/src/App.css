@@ -18,13 +18,14 @@ body.dark-theme {
 .container_links {
   position: absolute;
   width: 240px;
-  height: 240px;
+  height: max-content;  
   top: 10px;
   left: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  gap: 6px;
   background: #a9bce7;
   padding: 6px;
   border-radius: 4px;

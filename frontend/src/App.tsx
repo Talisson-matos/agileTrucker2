@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import './App.css'
 import { BsMoonStarsFill } from "react-icons/bs";
 import { FaSun } from "react-icons/fa6";
-import { ImRocket } from "react-icons/im";
+import { MdContentCopy } from "react-icons/md";
 import { RiKey2Fill } from "react-icons/ri";
 import { MdMessage } from "react-icons/md";
 import OptimizedImage from './components/OptimizedImage';
+import { FaFilePdf } from "react-icons/fa6";
+import { TbFileTypeXml } from "react-icons/tb";
 
 
 function App() {
@@ -205,13 +207,19 @@ function App() {
 
         <Link className="formatador_agile" to="/agile">
           <button className="styled-button">
-            <ImRocket /> Agile
+            <MdContentCopy /> Agile Copy
           </button>
         </Link>
 
         <Link className="formatador_agile" to="/extrator">
           <button className="styled-button">
-            <ImRocket /> Extrator
+            <FaFilePdf /> ExtratorPDF
+          </button>
+        </Link>
+
+        <Link className="formatador_agile" to="/extratorxml">
+          <button className="styled-button">
+           <TbFileTypeXml /> ExtratorXML
           </button>
         </Link>
 
@@ -408,9 +416,6 @@ function App() {
                     <button onClick={addObsInput} className="botao info">
                       Criar Input
                     </button>
-
-
-
                   </div>
 
 
