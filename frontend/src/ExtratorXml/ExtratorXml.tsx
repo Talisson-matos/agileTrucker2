@@ -9,6 +9,8 @@ const campoLabels: Record<string, string> = {
     cnpj_pagador_frete: 'CNPJ Pagador do Frete',
     cnpj_remetente: 'CNPJ Remetente',
     cnpj_destinatario: 'CNPJ Destinatário',
+    cnpj_terminal_coleta: 'CNPJ Terminal de Coleta',
+    cnpj_terminal_entrega: 'CNPJ Terminal de Entrega',
     serie: 'Série',
     numero_nota: 'Número da Nota',
     chave_acesso: 'Chave de Acesso',
@@ -47,23 +49,27 @@ const ExtratorXML: React.FC = () => {
             const cnpjDestinatario = xmlDoc.querySelector('dest CNPJ')?.textContent || 'Não encontrado';
             const modFrete = xmlDoc.querySelector('transp modFrete')?.textContent || '9';
             const cnpjPagadorFrete = ['0', '4'].includes(modFrete) ? cnpjRemetente : modFrete === '1' ? cnpjDestinatario : 'Não especificado';
+            const cnpjTerminalColeta = xmlDoc.querySelector('retirada CNPJ')?.textContent || '';
+            const cnpjTerminalEntrega = xmlDoc.querySelector('entrega CNPJ')?.textContent || '';
 
-            // Format quantidade and peso_liquido to replace dots with commas
-            const quantidade = xmlDoc.querySelector('det prod qCom')?.textContent || 'Não encontrado';
-            const pesoLiquido = xmlDoc.querySelector('transp vol pesoL')?.textContent || 'Não encontrado';
+            // Format quantidade and peso (prefer pesoL, fallback to pesoB if pesoL is not found)
+            const quantidade = xmlDoc.querySelector('transp vol qVol')?.textContent || 'Não encontrado';
+            const pesoLiquido = xmlDoc.querySelector('transp vol pesoL')?.textContent || '';
+            const pesoBruto = xmlDoc.querySelector('transp vol pesoB')?.textContent || '';
+            const peso = pesoLiquido || pesoBruto || 'Não encontrado';
 
             const dadosExtraidos: DadosNF = {
                 cnpj_pagador_frete: cnpjPagadorFrete,
                 cnpj_remetente: cnpjRemetente,
                 cnpj_destinatario: cnpjDestinatario,
+                ...(cnpjTerminalColeta && { cnpj_terminal_coleta: cnpjTerminalColeta }),
+                ...(cnpjTerminalEntrega && { cnpj_terminal_entrega: cnpjTerminalEntrega }),
                 serie: xmlDoc.querySelector('ide serie')?.textContent || 'Não encontrado',
                 numero_nota: xmlDoc.querySelector('ide nNF')?.textContent || 'Não encontrado',
                 chave_acesso: xmlDoc.querySelector('infNFe')?.getAttribute('Id')?.replace('NFe', '') || 'Não encontrado',
                 quantidade: quantidade !== 'Não encontrado' ? quantidade.replace('.', ',') : quantidade,
-                peso_liquido: pesoLiquido !== 'Não encontrado' ? pesoLiquido.replace('.', ',') : pesoLiquido,
+                peso_liquido: peso !== 'Não encontrado' ? peso.replace('.', ',') : peso,
                 valor_nota: xmlDoc.querySelector('ICMSTot vNF')?.textContent?.replace('.', ',') ?? 'Não encontrado',
-
-
             };
 
             setDados(dadosExtraidos);
