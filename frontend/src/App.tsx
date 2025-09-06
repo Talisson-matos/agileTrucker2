@@ -9,6 +9,7 @@ import { MdMessage } from "react-icons/md";
 import OptimizedImage from './components/OptimizedImage';
 import { FaFilePdf } from "react-icons/fa6";
 import { TbFileTypeXml } from "react-icons/tb";
+import { FaTruckArrowRight } from "react-icons/fa6";
 
 
 function App() {
@@ -193,13 +194,13 @@ function App() {
 
 
       <div className="container_links">
-        <Link className="message_trucker" to="/message">
+        <Link className="formatador_agile" to="/message">
           <button className="styled-button">
             <MdMessage /> Mensagem
           </button>
         </Link>
 
-        <Link className="formatador_link" to="/formatador">
+        <Link className="formatador_agile" to="/formatador">
           <button className="styled-button">
             <RiKey2Fill /> Formatador
           </button>
@@ -220,6 +221,12 @@ function App() {
         <Link className="formatador_agile" to="/extratorxml">
           <button className="styled-button">
            <TbFileTypeXml /> ExtratorXML
+          </button>
+        </Link>
+
+        <Link className="formatador_agile" to="/extratorcrlv">
+          <button className="styled-button">
+          <FaTruckArrowRight /> ExtratorCRLV
           </button>
         </Link>
 
