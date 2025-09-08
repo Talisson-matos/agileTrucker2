@@ -6,11 +6,11 @@ interface DadosNF {
 }
 
 const campoLabels: Record<string, string> = {
-    cnpj_pagador_frete: 'CNPJ Pagador do Frete',
-    cnpj_remetente: 'CNPJ Remetente',
-    cnpj_destinatario: 'CNPJ Destinatário',
-    cnpj_terminal_coleta: 'CNPJ Terminal de Coleta',
-    cnpj_terminal_entrega: 'CNPJ Terminal de Entrega',
+    cnpj_pagador_frete: 'CNPJ/CPF Pagador do Frete',
+    cnpj_remetente: 'CNPJ/CPF Remetente',
+    cnpj_destinatario: 'CNPJ/CPF Destinatário',
+    cnpj_terminal_coleta: 'CNPJ/CPF Terminal de Coleta',
+    cnpj_terminal_entrega: 'CNPJ/CPF Terminal de Entrega',
     serie: 'Série',
     numero_nota: 'Número da Nota',
     chave_acesso: 'Chave de Acesso',
@@ -44,13 +44,31 @@ const ExtratorXML: React.FC = () => {
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(text, 'text/xml');
 
-            // Extract data from XML
-            const cnpjRemetente = xmlDoc.querySelector('emit CNPJ')?.textContent || 'Não encontrado';
-            const cnpjDestinatario = xmlDoc.querySelector('dest CNPJ')?.textContent || 'Não encontrado';
+            // Helper function to get CNPJ or CPF from a node
+            const getCnpjOrCpf = (node: Element | null) => {
+                const cpf = node?.querySelector('CPF')?.textContent;
+                const cnpj = node?.querySelector('CNPJ')?.textContent;
+                return cpf || cnpj || 'Não encontrado';
+            };
+
+            // Extract CNPJ or CPF for emitter, destination, pickup, and delivery
+            const emitNode = xmlDoc.querySelector('emit');
+            const destNode = xmlDoc.querySelector('dest');
+            const retiradaNode = xmlDoc.querySelector('retirada');
+            const entregaNode = xmlDoc.querySelector('entrega');
+
+            const cnpjOrCpfRemetente = getCnpjOrCpf(emitNode);
+            const cnpjOrCpfDestinatario = getCnpjOrCpf(destNode);
+            const cnpjOrCpfTerminalColeta = getCnpjOrCpf(retiradaNode);
+            const cnpjOrCpfTerminalEntrega = getCnpjOrCpf(entregaNode);
+
+            // Determine pagador do frete based on modFrete
             const modFrete = xmlDoc.querySelector('transp modFrete')?.textContent || '9';
-            const cnpjPagadorFrete = ['0', '4'].includes(modFrete) ? cnpjRemetente : modFrete === '1' ? cnpjDestinatario : 'Não especificado';
-            const cnpjTerminalColeta = xmlDoc.querySelector('retirada CNPJ')?.textContent || '';
-            const cnpjTerminalEntrega = xmlDoc.querySelector('entrega CNPJ')?.textContent || '';
+            const cnpjOrCpfPagadorFrete = ['0', '4'].includes(modFrete)
+                ? cnpjOrCpfRemetente
+                : modFrete === '1'
+                ? cnpjOrCpfDestinatario
+                : 'Não especificado';
 
             // Format quantidade and peso (prefer pesoL, fallback to pesoB if pesoL is not found)
             const quantidade = xmlDoc.querySelector('transp vol qVol')?.textContent || 'Não encontrado';
@@ -59,11 +77,15 @@ const ExtratorXML: React.FC = () => {
             const peso = pesoLiquido || pesoBruto || 'Não encontrado';
 
             const dadosExtraidos: DadosNF = {
-                cnpj_pagador_frete: cnpjPagadorFrete,
-                cnpj_remetente: cnpjRemetente,
-                cnpj_destinatario: cnpjDestinatario,
-                ...(cnpjTerminalColeta && { cnpj_terminal_coleta: cnpjTerminalColeta }),
-                ...(cnpjTerminalEntrega && { cnpj_terminal_entrega: cnpjTerminalEntrega }),
+                cnpj_pagador_frete: cnpjOrCpfPagadorFrete,
+                cnpj_remetente: cnpjOrCpfRemetente,
+                cnpj_destinatario: cnpjOrCpfDestinatario,
+                ...(cnpjOrCpfTerminalColeta && cnpjOrCpfTerminalColeta !== 'Não encontrado' && {
+                    cnpj_terminal_coleta: cnpjOrCpfTerminalColeta,
+                }),
+                ...(cnpjOrCpfTerminalEntrega && cnpjOrCpfTerminalEntrega !== 'Não encontrado' && {
+                    cnpj_terminal_entrega: cnpjOrCpfTerminalEntrega,
+                }),
                 serie: xmlDoc.querySelector('ide serie')?.textContent || 'Não encontrado',
                 numero_nota: xmlDoc.querySelector('ide nNF')?.textContent || 'Não encontrado',
                 chave_acesso: xmlDoc.querySelector('infNFe')?.getAttribute('Id')?.replace('NFe', '') || 'Não encontrado',
