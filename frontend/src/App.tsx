@@ -175,24 +175,42 @@ function App() {
 
 
   return (
+
+
+
     <div className="container">
-      <button
-        onClick={() => setIsDark(prev => !prev)}
-        style={{
-          padding: '10px 20px',
-          borderRadius: '8px',
-          border: 'none',
-          backgroundColor: isDark ? '#2196f3' : '#4caf50',
-          color: '#fff',
-          cursor: 'pointer',
-          fontWeight: 'bold',
-        }}
 
-      >
-        {isDark ? <BsMoonStarsFill /> : <FaSun />}
-      </button>
+      <div className="container_another">
+
+        <button
+          onClick={() => setIsDark(prev => !prev)}
+          style={{
+            padding: '10px 20px',
+            borderRadius: '8px',
+            border: 'none',
+            backgroundColor: isDark ? '#2196f3' : '#4caf50',
+            color: '#fff',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          }}
+
+        >
+          {isDark ? <BsMoonStarsFill /> : <FaSun />}
+        </button>
+        <div className="container_another_links">
+
+          <a href="https://excelextractor.vercel.app/" target="_blank" className="excel-link">
+            <img src="excel.png" alt="Ícone Excel" className="excel-icon" />
+            Excel
+          </a>
+          <a href="https://tasks-kanban.vercel.app/" target="_blank" className="kanban-link">
+          <img src="tasks.png" alt="Ícone Tasks" className="excel-icon" />
+            kanban
+          </a>
+        </div>
 
 
+      </div>
       <div className="container_links">
         <Link className="formatador_agile" to="/message">
           <button className="styled-button">
@@ -220,13 +238,13 @@ function App() {
 
         <Link className="formatador_agile" to="/extratorxml">
           <button className="styled-button">
-           <TbFileTypeXml /> ExtratorXML
+            <TbFileTypeXml /> ExtratorXML
           </button>
         </Link>
 
         <Link className="formatador_agile" to="/extratorcrlv">
           <button className="styled-button">
-          <FaTruckArrowRight /> ExtratorCRLV
+            <FaTruckArrowRight /> ExtratorCRLV
           </button>
         </Link>
 

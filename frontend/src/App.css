@@ -242,6 +242,67 @@ body.dark-theme {
 .agile_trucker {
   width: 50px;
 }
+.container_another {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+
+
+}
+
+.container_another_links{
+  display: flex;
+  gap: 12px;
+}
+
+
+.excel-link { 
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: #2E8B57;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+ width: 90px;
+  justify-content: center;
+}
+
+.excel-link:hover {
+  background-color: #246b45;
+}
+
+.excel-icon {
+  width: 20px;
+  height: 20px;
+}
+
+
+.kanban-link { 
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: #d17d10;
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  width: 90px;
+  justify-content: center;
+}
+
+.kanban-link:hover {
+  background-color: #e46917;
+}
+
 
 
 /* Estilo responsivo */
