@@ -9,6 +9,7 @@ import App from './App.tsx'
 import Extrator from './Extrator/Extrator.tsx';
 import ExtratorXML from './ExtratorXml/ExtratorXml.tsx';
 import ExtratorCRLV from './ExtratorCRLV/ExtratorCRLV.tsx';
+import ExtratorOCR from './ExtratorOCR/ExtratorOCR.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/extrator" element={<Extrator />} />        
         <Route path="/extratorxml" element={<ExtratorXML />} />        
         <Route path="/extratorcrlv" element={<ExtratorCRLV />} />        
+        <Route path="/extratorocr" element={<ExtratorOCR />} />                   
       </Routes>
     </BrowserRouter>
 

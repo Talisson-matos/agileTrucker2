@@ -4,12 +4,15 @@ import './App.css'
 import { BsMoonStarsFill } from "react-icons/bs";
 import { FaSun } from "react-icons/fa6";
 import { MdContentCopy } from "react-icons/md";
-import { RiKey2Fill } from "react-icons/ri";
+import { MdVpnKey } from "react-icons/md";
 import { MdMessage } from "react-icons/md";
 import OptimizedImage from './components/OptimizedImage';
 import { FaFilePdf } from "react-icons/fa6";
 import { TbFileTypeXml } from "react-icons/tb";
 import { FaTruckArrowRight } from "react-icons/fa6";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import { RiFileExcel2Fill } from "react-icons/ri";
+import { MdTaskAlt } from "react-icons/md";
 
 
 function App() {
@@ -197,20 +200,8 @@ function App() {
         >
           {isDark ? <BsMoonStarsFill /> : <FaSun />}
         </button>
-        <div className="container_another_links">
-
-          <a href="https://excelextractor.vercel.app/" target="_blank" className="excel-link">
-            <img src="excel.png" alt="Ícone Excel" className="excel-icon" />
-            Excel
-          </a>
-          <a href="https://tasks-kanban.vercel.app/" target="_blank" className="kanban-link">
-          <img src="tasks.png" alt="Ícone Tasks" className="excel-icon" />
-            kanban
-          </a>
-        </div>
-
-
       </div>
+
       <div className="container_links">
         <Link className="formatador_agile" to="/message">
           <button className="styled-button">
@@ -220,7 +211,7 @@ function App() {
 
         <Link className="formatador_agile" to="/formatador">
           <button className="styled-button">
-            <RiKey2Fill /> Formatador
+            <MdVpnKey /> Formatador
           </button>
         </Link>
 
@@ -245,6 +236,24 @@ function App() {
         <Link className="formatador_agile" to="/extratorcrlv">
           <button className="styled-button">
             <FaTruckArrowRight /> ExtratorCRLV
+          </button>
+        </Link>
+        
+        <Link className="formatador_agile" to="/extratorocr">
+          <button className="styled-button">
+            <FaMagnifyingGlass /> ExtratorOCR
+          </button>
+        </Link>
+
+        <Link className="formatador_agile" target='_blank' to="https://excelextractor.vercel.app/">
+          <button className="styled-button">
+            <RiFileExcel2Fill /> ExtratorExcel
+          </button>
+        </Link>
+
+        <Link className="formatador_agile" target='_blank' to="https://tasks-kanban.vercel.app/">
+          <button className="styled-button">
+            <MdTaskAlt /> KanbanTasks
           </button>
         </Link>
 
