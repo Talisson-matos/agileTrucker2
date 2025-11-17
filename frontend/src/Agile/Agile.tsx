@@ -421,6 +421,27 @@ const Agile: React.FC = () => {
                 >
                   Acessar Pamcard
                 </button>
+
+                <button
+                  className="agile-botao-metalico agile-link-btn"
+                  onClick={() => openLink("https://qualp.com.br/#/")}
+                >
+                  Acessar Qualp
+                </button>
+
+                <button
+                  className="agile-botao-metalico agile-link-btn"
+                  onClick={() => openLink("https://rotasbrasil.com.br/")}
+                >
+                  Acessar Rotas Brasil
+                </button>
+
+                <button
+                  className="agile-botao-metalico agile-link-btn"
+                  onClick={() => openLink("https://consultapublica.antt.gov.br/Site/ConsultaRNTRC.aspx/consultapublica")}
+                >
+                  Acessar Consulta ANTT
+                </button>
               </div>
             ) : null}
 
