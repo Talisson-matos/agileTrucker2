@@ -22,6 +22,7 @@ const Agile: React.FC = () => {
     { label: "FRETE S/IMPOSTO", content: "" },
     { label: "FRETE C/ IMPOSTO", content: "" },
     { label: "CONTA BANCÁRIA", content: "" },
+    { label: "PEDÁGIO", content: "" },
     { label: "FRETE TERCEIRO C/ IMPOSTO", content: "" },
     { label: "FRETE TOTAL TERCEIRO", content: "" },
     { label: "FILIAL", content: "" },
@@ -184,9 +185,9 @@ const Agile: React.FC = () => {
         .map(p => formatPlate(p))
         .join(" / ");
       const eixos = getValue("EIXOS");
+      const valor = getValue("PEDÁGIO");
       const linha = getValue("LINHA");
-      const proprietario = getValue("PROPRIETÁRIO");
-      const antt = getValue("ANTT") || getValue("PROPRIETÁRIO");
+      const proprietario = getValue("PROPRIETÁRIO");      
 
       items.push(`FILIAL: ${filial || "VAZIO"}`);
       items.push(`MDFE: ${mdfe || "VAZIO"}`);
@@ -195,10 +196,9 @@ const Agile: React.FC = () => {
       items.push(`EIXOS: ${eixos || "VAZIO"}`);
       items.push(`LINHA: ${linha || "VAZIO"}`);
       items.push(`CARTÃO: VAZIO`);
-      items.push(`VALOR: VAZIO`);
+      items.push(`VALOR: ${valor || "0,00"}`);
       items.push(`FATURADO: SAMID`);
-      items.push(`CPF/CNPJ PROPRIETÁRIO: ${proprietario || "VAZIO"}`);
-      items.push(`CPF/CNPJ PROPRIETÁRIO ANTT: ${antt || "VAZIO"}`);
+      items.push(`CPF/CNPJ PROPRIETÁRIO ANTT: ${proprietario || "VAZIO"}`);     
 
     } else if (activeTab === "arquivos") {
       const motorista = getValue("MOTORISTA");
@@ -209,8 +209,8 @@ const Agile: React.FC = () => {
       const reboque2 = getValue("REBOQUE2");
       const dolly = getValue("DOLLY") || "";
 
-      if (cte && motorista) items.push(`(CT-e ${cte}) • ${motorista}`);
-      if (mdfe && motorista) items.push(`(MDF-e ${mdfe}) • ${motorista}`);
+      if (cte && motorista) items.push(`(CTe ${cte}) • ${motorista}`);
+      if (mdfe && motorista) items.push(`(MDFe ${mdfe}) • ${motorista}`);
       if (cte && motorista) items.push(`(CTRB ${cte}) • ${motorista}`);
       if (cte && motorista) items.push(`(Gnre ${cte}) • ${motorista}`);
       if (cavalo && motorista) items.push(`(CAVALO - ${cavalo}) • ${motorista}`);
