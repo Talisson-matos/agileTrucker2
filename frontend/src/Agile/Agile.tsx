@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./Agile.css";
 
 type ButtonItem = {
@@ -6,227 +6,425 @@ type ButtonItem = {
   content: string;
 };
 
+type TabType = "liberacao" | "monitoramento" | "pedagio" | "arquivos";
+
 const Agile: React.FC = () => {
-  const [buttons, setButtons] = useState<ButtonItem[]>([
-    { label: "Motorista", content: "" },
-    { label: "Cavalo", content: "" },
-    { label: "Reboque", content: "" },
-    { label: "Reboque2", content: "" },
-    { label: "DOLLY", content: "" },
-    { label: "Linha", content: "" },
-    { label: "CTe", content: "" },
-    { label: "MDFe", content: "" },
-    { label: "CPF", content: "" },
-    { label: "CNPJ", content: "" },
-    { label: "ANTT", content: "" },
-    { label: "Contato", content: "" },
-    { label: "Chave", content: "" },
-    { label: "Liberação", content: "" },
-    { label: "SM", content: "" },
-  ]);
+  const initialButtons: ButtonItem[] = [
+    { label: "Nº PEDIDO", content: "" },
+    { label: "MOTORISTA", content: "" },
+    { label: "CAVALO", content: "" },
+    { label: "REBOQUE", content: "" },
+    { label: "REBOQUE2", content: "" },
+    { label: "LINHA", content: "" },
+    { label: "PROPRIETÁRIO", content: "" },
+    { label: "ITEM FRETE", content: "" },
+    { label: "EIXOS", content: "" },
+    { label: "FRETE S/IMPOSTO", content: "" },
+    { label: "FRETE C/ IMPOSTO", content: "" },
+    { label: "CONTA BANCÁRIA", content: "" },
+    { label: "FRETE TERCEIRO C/ IMPOSTO", content: "" },
+    { label: "FRETE TOTAL TERCEIRO", content: "" },
+    { label: "FILIAL", content: "" },
+    { label: "CTE", content: "" },
+    { label: "MDFE", content: "" },
+  ];
+
+  const [buttons, setButtons] = useState<ButtonItem[]>(initialButtons);
   const [customLabel, setCustomLabel] = useState("");
-  const [notification] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [activeTab, setActiveTab] = useState<TabType>("liberacao");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [generatedFiles, setGeneratedFiles] = useState<string[]>([]);
-  const [feedback, setFeedback] = useState('')
+  const [generatedItems, setGeneratedItems] = useState<string[]>([]);
+  const [showSummary, setShowSummary] = useState(false);
+  const clickCounts = useRef<{ [key: number]: number }>({});
+  const clickTimers = useRef<{ [key: number]: ReturnType<typeof setTimeout> | null }>({});
+
+
+  const toUpper = (str: string) => str.toUpperCase().trim();
+
+  const getValue = (label: string) => toUpper(buttons.find(b => b.label === label)?.content || "");
+
+  const formatPlate = (plate: string) => {
+    if (!plate || plate.length < 7) return plate;
+    return `${plate.slice(0, 3)}-${plate.slice(3)}`;
+  };
+
+  const notify = (msg: string) => {
+    setFeedback(msg);
+    setTimeout(() => setFeedback(""), 2000);
+  };
+
+  const copyToClipboard = async (text: string, successMsg: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      notify(successMsg);
+    } catch {
+      notify("Falha ao copiar.");
+    }
+  };
 
   const handleClick = async (index: number) => {
+    const button = buttons[index];
+
     if (!navigator.clipboard) {
-      notify("⚠️ Navegador não suporta API de área de transferência.");
+      notify("Área de transferência não suportada.");
       return;
     }
-    const button = buttons[index];
-    const updated = [...buttons];
 
     if (button.content === "") {
       try {
-        const permissionStatus = await navigator.permissions.query({ name: "clipboard-read" as PermissionName });
-        if (permissionStatus.state === "denied") {
-          console.warn(`[Clipboard Warning] Permissão negada para leitura da área de transferência.`);
-          notify("⚠️ Permissão negada para leitura da área de transferência.");
-          return;
-        }
-
         const text = await navigator.clipboard.readText();
-        updated[index].content = text;
+        const updated = [...buttons];
+        updated[index].content = toUpper(text);
         setButtons(updated);
-        notify(`✅ Valor colado em ${button.label}`);
-      } catch (error) {
-        console.error(`[Clipboard Error] Falha ao colar conteúdo no botão "${button.label}":`, error);
-        notify("❌ Falha ao colar da área de transferência.");
+        notify(`Colado em ${button.label}`);
+      } catch {
+        notify("Falha ao colar.");
       }
+      clickCounts.current[index] = 0;
     } else {
-      try {
-        await navigator.clipboard.writeText(button.content);
-        notify(`✅ Copiado: ${button.label}`);
-      } catch (error) {
-        console.error(`[Clipboard Error] Falha ao copiar conteúdo do botão "${button.label}":`, error);
-        notify("❌ Falha ao copiar para área de transferência.");
+      clickCounts.current[index] = (clickCounts.current[index] || 0) + 1;
+
+      if (clickTimers.current[index]) {
+        clearTimeout(clickTimers.current[index]);
+      }
+
+      clickTimers.current[index] = setTimeout(() => {
+        clickCounts.current[index] = 0;
+        clickTimers.current[index] = null;
+      }, 500);
+
+      if (clickCounts.current[index] >= 3) {
+        const updated = [...buttons];
+        updated[index].content = "";
+        setButtons(updated);
+        notify(`Limpo: ${button.label}`);
+        clickCounts.current[index] = 0;
+      } else {
+        copyToClipboard(button.content, `Copiado: ${button.label}`);
       }
     }
   };
 
-
-
-
-  const copyGenerated = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => notify(`✅ Copiado: ${text}`))
-      .catch((error) => {
-        console.error(`[Clipboard Error] Falha ao copiar texto gerado "${text}":`, error);
-        notify("❌ Falha ao copiar.");
-      });
-  };
-
-  const generateGroup = (group: "emissoes" | "cadastro") => {
-    const motorista = buttons.find((btn) => btn.label === "Motorista")?.content || "";
-    const cte = buttons.find((btn) => btn.label === "CTe")?.content || "";
-    const mdfe = buttons.find((btn) => btn.label === "MDFe")?.content || "";
-    const cavalo = buttons.find((btn) => btn.label === "Cavalo")?.content || "";
-    const reboque = buttons.find((btn) => btn.label === "Reboque")?.content || "";
-    const reboque2 = buttons.find((btn) => btn.label === "Reboque2")?.content || "";
-    const dolly = buttons.find((btn) => btn.label === "DOLLY")?.content || "";
-
-    let files: string[] = [];
-
-    if (group === "emissoes") {
-      if (cte && motorista) files.push(`(CT-e ${cte}) • ${motorista}`);
-      if (mdfe && motorista) files.push(`(MDF-e ${mdfe}) • ${motorista}`);
-      if (cte && motorista) files.push(`(CTRB ${cte}) • ${motorista}`);
-      if (cte && motorista) files.push(`(Gnre ${cte}) • ${motorista}`);
+  const handlePasteInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value;
+    const cleaned = val.replace(/[\s.\-\/]/g, "");
+    if (cleaned) {
+      await copyToClipboard(cleaned, `Copiado: ${cleaned}`);
     }
-
-    if (group === "cadastro") {
-      if (cavalo && motorista) files.push(`(CAVALO - ${cavalo}) • ${motorista}`);
-      if (reboque && motorista) files.push(`(REBOQUE - ${reboque}) • ${motorista}`);
-      if (reboque2 && motorista) files.push(`(REBOQUE2 - ${reboque2}) • ${motorista}`);
-      if (dolly && motorista) files.push(`(DOLLY - ${dolly}) • ${motorista}`);
-      if (motorista) files.push(`CNH • ${motorista}`);
-    }
-
-    setGeneratedFiles(files);
+    e.target.value = "";
   };
 
   const handleCustomCreate = () => {
     const label = customLabel.trim();
-    if (!label) return notify("⚠️ Insira um nome para o botão.");
-
-    const exists = buttons.some((btn) => btn.label.toLowerCase() === label.toLowerCase());
-    if (exists) return notify("⚠️ Botão já existe.");
-
-    setButtons([...buttons, { label, content: "" }]);
+    if (!label) return notify("Digite um nome.");
+    if (buttons.some(b => b.label.toLowerCase() === label.toLowerCase())) {
+      return notify("Botão já existe.");
+    }
+    setButtons([...buttons, { label: toUpper(label), content: "" }]);
     setCustomLabel("");
-    notify(`✅ Botão ${label} criado.`);
+    notify(`Botão criado: ${toUpper(label)}`);
   };
 
   const handleClear = () => {
-    setButtons([
-      { label: "Motorista", content: "" },
-      { label: "Cavalo", content: "" },
-      { label: "Reboque", content: "" },
-      { label: "Reboque2", content: "" },
-      { label: "DOLLY", content: "" },
-      { label: "Linha", content: "" },
-      { label: "CTe", content: "" },
-      { label: "MDFe", content: "" },
-      { label: "CPF", content: "" },
-      { label: "CNPJ", content: "" },
-      { label: "ANTT", content: "" },
-      { label: "Contato", content: "" },
-      { label: "Chave", content: "" },
-      { label: "Liberação", content: "" },
-      { label: "SM", content: "" },
-    ]);
-    notify("🧹 Botões e valores resetados!");
+    setButtons(initialButtons.map(b => ({ ...b, content: "" })));
+    setGeneratedItems([]);
+    notify("Tudo limpo!");
   };
 
-  const notify = (msg: string) => {
-    setFeedback(msg)
-    setTimeout(() => setFeedback(''), 1500)
-  }
+  const generateContent = () => {
+    const items: string[] = [];
 
-  const handlePasteInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value
-    // Remove espaços, traços, pontos e barras
-    let cleaned = val.replace(/[\s.\-\/]/g, "")
-    if (cleaned) {
-      try {
-        await navigator.clipboard.writeText(cleaned)
-        notify(`✅ Copiado: ${cleaned}`)
-      } catch {
-        notify("❌ Falha ao copiar número.")
-      }
+    if (activeTab === "liberacao") {
+      const motorista = getValue("MOTORISTA");
+      const cavalo = formatPlate(getValue("CAVALO"));
+      const reboque = formatPlate(getValue("REBOQUE"));
+      const linha = getValue("LINHA");
+
+      if (motorista) items.push(motorista);
+      if (cavalo) items.push(cavalo);
+      if (reboque) items.push(reboque);
+      if (linha) items.push(linha);
+
+    } else if (activeTab === "monitoramento") {
+      const motorista = getValue("MOTORISTA");
+      const cavalo = formatPlate(getValue("CAVALO"));
+      const reboque = formatPlate(getValue("REBOQUE"));
+      const linha = getValue("LINHA");
+
+      const now = new Date();
+      const inicio = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+      const termino = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+
+      const formatDate = (d: Date) =>
+        `${d.getHours().toString().padStart(2, "0")}:${d
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}:${d
+          .getSeconds()
+          .toString()
+          .padStart(2, "0")} ${d.getDate().toString().padStart(2, "0")}/${(
+          d.getMonth() + 1
+        )
+          .toString()
+          .padStart(2, "0")}/${d.getFullYear()}`;
+
+      if (motorista) items.push(motorista);
+      if (cavalo) items.push(cavalo);
+      if (reboque) items.push(reboque);
+      items.push(`INÍCIO ${formatDate(inicio)}; TÉRMINO ${formatDate(termino)}`);
+      if (linha) items.push(linha);
+
+    } else if (activeTab === "pedagio") {
+      const filial = getValue("FILIAL");
+      const mdfe = getValue("MDFE");
+      const motorista = getValue("MOTORISTA");
+      const placas = [getValue("CAVALO"), getValue("REBOQUE"), getValue("REBOQUE2")]
+        .filter(Boolean)
+        .map(p => formatPlate(p))
+        .join(" / ");
+      const eixos = getValue("EIXOS");
+      const linha = getValue("LINHA");
+      const proprietario = getValue("PROPRIETÁRIO");
+      const antt = getValue("ANTT") || getValue("PROPRIETÁRIO");
+
+      items.push(`FILIAL: ${filial || "VAZIO"}`);
+      items.push(`MDFE: ${mdfe || "VAZIO"}`);
+      items.push(`MOTORISTA: ${motorista || "VAZIO"}`);
+      items.push(`PLACAS: ${placas || "VAZIO"}`);
+      items.push(`EIXOS: ${eixos || "VAZIO"}`);
+      items.push(`LINHA: ${linha || "VAZIO"}`);
+      items.push(`CARTÃO: VAZIO`);
+      items.push(`VALOR: VAZIO`);
+      items.push(`FATURADO: SAMID`);
+      items.push(`CPF/CNPJ PROPRIETÁRIO: ${proprietario || "VAZIO"}`);
+      items.push(`CPF/CNPJ PROPRIETÁRIO ANTT: ${antt || "VAZIO"}`);
+
+    } else if (activeTab === "arquivos") {
+      const motorista = getValue("MOTORISTA");
+      const cte = getValue("CTE");
+      const mdfe = getValue("MDFE");
+      const cavalo = getValue("CAVALO");
+      const reboque = getValue("REBOQUE");
+      const reboque2 = getValue("REBOQUE2");
+      const dolly = getValue("DOLLY") || "";
+
+      if (cte && motorista) items.push(`(CT-e ${cte}) • ${motorista}`);
+      if (mdfe && motorista) items.push(`(MDF-e ${mdfe}) • ${motorista}`);
+      if (cte && motorista) items.push(`(CTRB ${cte}) • ${motorista}`);
+      if (cte && motorista) items.push(`(Gnre ${cte}) • ${motorista}`);
+      if (cavalo && motorista) items.push(`(CAVALO - ${cavalo}) • ${motorista}`);
+      if (reboque && motorista) items.push(`(REBOQUE - ${reboque}) • ${motorista}`);
+      if (reboque2 && motorista) items.push(`(REBOQUE2 - ${reboque2}) • ${motorista}`);
+      if (dolly && motorista) items.push(`(DOLLY - ${dolly}) • ${motorista}`);
+      if (motorista) items.push(`CNH • ${motorista}`);
     }
-    e.target.value = ""
-  }
+
+    setGeneratedItems(items);
+  };
+
+  const copyAllPedagio = () => {
+    const text = generatedItems.join("\n");
+    copyToClipboard(text, "Tudo copiado (Pedágio)");
+  };
+
+  const copyAllSummary = () => {
+    const summaryText = buttons.map(btn => `${btn.label}: ${btn.content || "[vazio]"}`).join("\n");
+    copyToClipboard(summaryText, "Resumo copiado");
+  };
+
+  const downloadSummaryTxt = () => {
+    const summaryText = buttons.map(btn => `${btn.label}: ${btn.content || "[vazio]"}`).join("\n");
+    const blob = new Blob([summaryText], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "resumo.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    notify("Arquivo .txt gerado");
+  };
+
+  const openLink = (url: string) => {
+    window.open(url, "_blank");
+  };
 
   return (
-    <div className="container">
-      <h2>🪄 Agile</h2>
-      <div className="cleaner-box">
-        <h4>🔎 Limpar Número</h4>
+    <div className="agile-container">
+      <h2 className="agile-title">Agile Pro</h2>
+
+      <div className="agile-cleaner-box">
+        <h4>Limpar Número</h4>
         <input
           type="text"
-          placeholder="Cole aqui um número..."
+          placeholder="Cole aqui para limpar..."
           onChange={handlePasteInput}
         />
-        {feedback && <span className="formatador-feedback">{feedback}</span>}
+        {feedback && <span className="agile-feedback">{feedback}</span>}
       </div>
 
-      <div className="button-container">
-        {buttons.map((btn, index) => (
-          <button key={index} className="clip-btn" onClick={() => handleClick(index)}>
-            <span className="label">{btn.label}</span>:{" "}
-           <span className="content">{btn.content || "[vazio]"}</span>
+      <div className="agile-button-grid">
+        {buttons.map((btn, i) => (
+          <button
+            key={i}
+            className="agile-botao-metalico agile-clip-btn"
+            onClick={() => handleClick(i)}
+          >
+            <span className="agile-label">{btn.label}</span>
+            <span className="agile-content">{btn.content || "[vazio]"}</span>
           </button>
         ))}
       </div>
 
-      <div className="custom-creator">
-        <input
-          type="text"
-          placeholder="Novo botão"
-          value={customLabel}
-          onChange={(e) => setCustomLabel(e.target.value)}
-        />
-        <button onClick={handleCustomCreate}>Criar botão</button>
-        <button className="clear-btn" onClick={handleClear}>
-          Limpar botões
+      <div className="agile-actions-bar">
+        <div className="agile-custom-input">
+          <input
+            placeholder="Novo campo..."
+            value={customLabel}
+            onChange={(e) => setCustomLabel(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleCustomCreate()}
+          />
+          <button className="agile-botao-metalico agile-small" onClick={handleCustomCreate}>
+            Criar
+          </button>
+        </div>
+        <button className="agile-botao-metalico agile-clear" onClick={handleClear}>
+          Limpar Tudo
         </button>
       </div>
 
-      <div className="generator-control">
-        <button className="open-modal-btn" onClick={() => setIsModalOpen(true)}>
-          📂 Gerar Arquivos
+      <div className="agile-generator-control">
+        <button
+          className="agile-botao-metalico agile-open-modal"
+          onClick={() => {
+            generateContent();
+            setIsModalOpen(true);
+          }}
+        >
+          Gerar Informações
         </button>
       </div>
 
-      {notification && <div className="notification">{notification}</div>}
+      <div className="agile-summary-control">
+        <button
+          className="agile-botao-metalico agile-summary-btn"
+          onClick={() => setShowSummary(!showSummary)}
+        >
+          {showSummary ? "Esconder Resumo" : "Mostrar Resumo"}
+        </button>
+      </div>
 
-      {/* MODAL */}
+      {showSummary && (
+        <div className="agile-summary-section">
+          <h3>Resumo de Informações</h3>
+          <div className="agile-summary-list">
+            {buttons.map((btn, i) => (
+              <div key={i} className="agile-summary-item">
+                {btn.label}: {btn.content || "[vazio]"}
+              </div>
+            ))}
+          </div>
+          <div className="agile-summary-actions">
+            <button
+              className="agile-botao-metalico agile-copy-all"
+              onClick={copyAllSummary}
+            >
+              Copiar Tudo
+            </button>
+            <button
+              className="agile-botao-metalico agile-download-txt"
+              onClick={downloadSummaryTxt}
+            >
+              Gerar .txt
+            </button>
+          </div>
+        </div>
+      )}
+
       {isModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>📂 Gerador de Arquivos</h3>
+        <div className="agile-modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="agile-modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Gerador de Informações</h3>
 
-            <div className="modal-buttons">
-              <button onClick={() => generateGroup("emissoes")}>Gerar Emissões</button>
-              <button onClick={() => generateGroup("cadastro")}>Gerar Cadastro</button>
-            </div>
-
-            <div className="generated-list">
-              {generatedFiles.length === 0 && <p className="empty">Nenhum arquivo gerado ainda.</p>}
-              {generatedFiles.map((file, idx) => (
-                <div key={idx} className="generated-item">
-                  <span>{file}</span>
-                  <button onClick={() => copyGenerated(file)}>Copiar</button>
-                </div>
+            <div className="agile-tabs">
+              {(["liberacao", "monitoramento", "pedagio", "arquivos"] as TabType[]).map((tab) => (
+                <button
+                  key={tab}
+                  className={`agile-tab-btn ${activeTab === tab ? "agile-active" : ""}`}
+                  onClick={() => {
+                    setActiveTab(tab);
+                    generateContent();
+                  }}
+                >
+                  {tab === "liberacao" ? "Liberação" : tab === "monitoramento" ? "Monitoramento" : tab === "pedagio" ? "Pedágio" : "Arquivos"}
+                </button>
               ))}
-
             </div>
-            {feedback && <span className="formatador-feedback">{feedback}</span>}
-            <button className="close-modal-btn" onClick={() => setIsModalOpen(false)}>
+
+            <div className="agile-generated-list">
+              {generatedItems.length === 0 ? (
+                <p className="agile-empty">Nenhum dado preenchido.</p>
+              ) : (
+                generatedItems.map((item, i) => (
+                  <div key={i} className="agile-generated-item">
+                    <span>{item}</span>
+                    {activeTab !== "pedagio" && (
+                      <button
+                        className="agile-botao-metalico agile-mini"
+                        onClick={() => copyToClipboard(item, "Copiado")}
+                      >
+                        Copiar
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+              {activeTab === "pedagio" && generatedItems.length > 0 && (
+                <button className="agile-botao-metalico agile-full-copy" onClick={copyAllPedagio}>
+                  Copiar Tudo
+                </button>
+              )}
+            </div>
+
+            {activeTab === "liberacao" || activeTab === "monitoramento" ? (
+              <div className="agile-links-section">
+                <h4>Links Úteis</h4>
+                <div className="agile-link-item">
+                  <button
+                    className="agile-botao-metalico agile-link-btn"
+                    onClick={() => openLink("http://vstrack.ddns.net/komando/?ReturnUrl=%2Fkomando%2FRastreamento%2FIndex")}
+                  >
+                    Acessar KOMANDO
+                  </button>
+                  <p>Usuário: expedicao3@samidtransportes.com.br</p>
+                  <p>Senha: 123456</p>
+                </div>
+                <div className="agile-link-item">
+                  <button
+                    className="agile-botao-metalico agile-link-btn"
+                    onClick={() => openLink("http://vstrack.ddns.net/komando/?ReturnUrl=%2Fkomando%2FRastreamento%2FIndex")}
+                  >
+                    Acessar KOMANDO JOLAZ
+                  </button>
+                  <p>Usuário: contato@jolaz.com.br</p>
+                  <p>Senha: 123456</p>
+                </div>
+              </div>
+            ) : activeTab === "pedagio" ? (
+              <div className="agile-links-section">
+                <h4>Links Úteis</h4>
+                <button
+                  className="agile-botao-metalico agile-link-btn"
+                  onClick={() => openLink("https://www.roadcard.com.br/sistemapamcard/?loadGaScript=load")}
+                >
+                  Acessar Pamcard
+                </button>
+              </div>
+            ) : null}
+
+            <button className="agile-botao-metalico agile-close" onClick={() => setIsModalOpen(false)}>
               Fechar
             </button>
           </div>
