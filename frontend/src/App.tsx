@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import type { ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css'
 import { BsMoonStarsFill } from "react-icons/bs";
@@ -23,7 +24,6 @@ function App() {
     document.body.className = isDark ? 'dark-theme' : 'light-theme';
   }, [isDark]);
 
-
   // Estados principais
   const [frete, setFrete] = useState<string>('')
   const [taxa, setTaxa] = useState<string>('')
@@ -32,6 +32,9 @@ function App() {
     creditoPresumido: number
     icmsRecolher: number
   } | null>(null)
+
+  // Feedback para limpar número
+  const [feedback, setFeedback] = useState<string>('')
 
   // Modais
   const [showGuiaModal, setShowGuiaModal] = useState(false)
@@ -46,12 +49,16 @@ function App() {
   const [guiaCopied, setGuiaCopied] = useState(false)
   const [creditoPresumido, setCreditoPresumido] = useState('')
 
-
   // Estado Obs. CTe
   const [obsList, setObsList] = useState<string[]>([])
-
   const [cteSubmitted, setCteSubmitted] = useState(false)
   const [cteCopied, setCteCopied] = useState(false)
+
+  // Função para notificar usuário
+  const notify = (msg: string) => {
+    setFeedback(msg);
+    setTimeout(() => setFeedback(''), 1500);
+  };
 
   // Formata número em R$
   const formatarRS = (valor: number) =>
@@ -66,6 +73,21 @@ function App() {
           setter(valor)
         }
       }
+
+  // Input que limpa e copia automaticamente ao colar
+  const handlePasteInput = async (e: ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    const cleaned = val.replace(/[\s.\-\/]/g, "");
+    if (cleaned) {
+      try {
+        await navigator.clipboard.writeText(cleaned);
+        notify(`✅ Copiado: ${cleaned}`);
+      } catch {
+        notify("❌ Falha ao copiar número.");
+      }
+    }
+    e.target.value = "";
+  };
 
   // Cálculo de ICMS
   const calcularICMS = () => {
@@ -106,7 +128,6 @@ function App() {
     setGuiaSubmitted(false)
     setGuiaCopied(false)
     setCreditoPresumido('')
-    setCreditoPresumido('')
   }
 
   const copyGuiaToClipboard = () => {
@@ -130,7 +151,6 @@ function App() {
   const openCteModal = () => {
     setShowCteModal(true)
     setObsList([])
-
     setCteSubmitted(false)
     setCteCopied(false)
   }
@@ -149,12 +169,8 @@ function App() {
     setObsList(newList)
   }
 
-
-
-
   const clearCte = () => {
     setObsList([])
-
     setCteSubmitted(false)
     setCteCopied(false)
     setCreditoPresumido('')
@@ -171,20 +187,13 @@ function App() {
       `- CREDITO PRESUMIDO: ${formatarRS(resultado.creditoPresumido)} - ICMS A RECOLHER: ${formatarRS(resultado.icmsRecolher)}`,
     ].filter(line => line !== '').join('\n');
 
-    // Copia como texto plano (sem formatação)
     navigator.clipboard.writeText(parts);
     setCteCopied(true);
   };
 
-
   return (
-
-
-
     <div className="container">
-
       <div className="container_another">
-
         <button
           onClick={() => setIsDark(prev => !prev)}
           style={{
@@ -196,7 +205,6 @@ function App() {
             cursor: 'pointer',
             fontWeight: 'bold',
           }}
-
         >
           {isDark ? <BsMoonStarsFill /> : <FaSun />}
         </button>
@@ -238,7 +246,7 @@ function App() {
             <FaTruckArrowRight /> ExtratorCRLV
           </button>
         </Link>
-        
+
         <Link className="formatador_agile" to="/extratorocr">
           <button className="styled-button">
             <FaMagnifyingGlass /> ExtratorOCR
@@ -256,11 +264,19 @@ function App() {
             <MdTaskAlt /> KanbanTasks
           </button>
         </Link>
+      </div>
 
+      <div className="cleaner-box">
+        <h4>🔎 Limpar Número</h4>
+        <input
+          type="text"
+          placeholder="Cole aqui um número..."
+          onChange={handlePasteInput}
+        />
+        {feedback && <span className="formatador-feedback">{feedback}</span>}
       </div>
 
       <div className="title_trucker">
-
         <OptimizedImage
           src="/Copilot_20250813_020239-removebg-preview.png"
           alt="truck"
@@ -268,12 +284,8 @@ function App() {
           width={40}
           height={25}
         />
-        <h2 className="titulo">
-          Cálculo de ICMS</h2>
+        <h2 className="titulo">Cálculo de ICMS</h2>
       </div>
-
-
-
 
       <div className="formulario">
         <input
@@ -394,8 +406,6 @@ function App() {
                     <option value="CREDITO PRESUMIDO - INCISO § 3º DO ARTIGO 11 DO ANEXO III DO RICMS-SP">SP - SÃO PAULO</option>
                   </select>
 
-
-
                   <div className="modal-button-group">
                     <button onClick={() => setGuiaSubmitted(true)} className="botao calcular">
                       Concluir
@@ -446,12 +456,10 @@ function App() {
               {!cteSubmitted ? (
                 <>
                   <div className="modal-button-group">
-
                     <button onClick={addObsInput} className="botao info">
                       Criar Input
                     </button>
                   </div>
-
 
                   <select
                     name="creditoPresumido"
@@ -478,7 +486,6 @@ function App() {
                     <option value="CREDITO PRESUMIDO - INCISO 37 DO ARTIGO 107 DO RICMS/ES">ES - ESPIRITO SANTO</option>
                     <option value="CREDITO PRESUMIDO - INCISO § 3º DO ARTIGO 11 DO ANEXO III DO RICMS-SP">SP - SÃO PAULO</option>
                   </select>
-
 
                   {obsList.map((obs, idx) => (
                     <input

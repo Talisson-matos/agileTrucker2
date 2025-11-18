@@ -4,7 +4,6 @@ import './Message.css'
 type CustomMessage = {
     label: string
     text: string
-    column: 'padrao' | 'frota' | 'terceiro'
 }
 
 type MessageItem = {
@@ -16,11 +15,13 @@ type MessageItem = {
 const mensagensPadrao: MessageItem[] = [
     {
         label: 'Carregamento',
-        text: 'Prezado Sr.@, Assim que finalizado o carregamento e a amarração, solicitamos, por gentileza, o envio das fotos das notas fiscais para prosseguirmos com a documentação. 📸 📝',
+        text: `Prezado Sr.@,
+Assim que finalizado o carregamento e a amarração, solicitamos, por gentileza, o envio das fotos das notas fiscais para prosseguirmos com a documentação. 📸 `,
     },
     {
         label: 'Pedagio',
-        text: 'Prezado Sr.@, Pedimos que solicite o Vale-Pedágio na portaria, para que possamos dar continuidade ao envio de sua documentação. 🛣️ 📄',
+        text: `Prezado Sr.@,
+Pedimos que solicite o Vale-Pedágio na portaria, para que possamos dar continuidade ao envio de sua documentação. 🛣️ 📄`,
     },
     {
         label: 'Descarga',
@@ -53,13 +54,18 @@ const mensagensPadrao: MessageItem[] = [
 ]
 
 const mensagensFrota: MessageItem[] = [
-    {
+     {
         label: 'Mensagem Inicial',
-        text: 'Prezado Sr.@, segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛',
+        text: `Prezado Sr.@,
+Segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛`,
     },
     {
         label: 'Mensagem Monitoramento - (caso se viagem for monitorada)',
         text: `Você será monitorado pela KOMANDO, favor dar início de viagem no teclado!\nAo fazer a parada para pernoite, lembre-se de parar em um local seguro onde haja sinal telefônico para facilitar a comunicação.\n\nCódigo SM:\n`,
+    },
+    {
+        label: 'Print Monitoramento',
+        text: 'Segue o print do monitoramento para sua referência.',       
     },
     {
         label: 'Orientações',
@@ -75,7 +81,8 @@ const mensagensFrota: MessageItem[] = [
 const mensagensTerceiro: MessageItem[] = [
     {
         label: 'Mensagem Inicial',
-        text: 'Prezado Sr.@, segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛',
+        text: `Prezado Sr.@,
+Segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛`,
     },
     {
         label: 'Mensagem Monitoramento - (caso se viagem for monitorada)',
@@ -225,9 +232,9 @@ const Message = () => {
     const [showModal, setShowModal] = useState(false)
     const [newLabel, setNewLabel] = useState('')
     const [newText, setNewText] = useState('')
-    const [selectedColumn, setSelectedColumn] = useState<'padrao' | 'frota' | 'terceiro'>('padrao')
-    const [activeColumn, setActiveColumn] = useState<'padrao' | 'frota' | 'terceiro'>('padrao')
+    const [activeColumn, setActiveColumn] = useState<'padrao' | 'frota' | 'terceiro' | 'personalizada'>('padrao')
     const [copiedLabel, setCopiedLabel] = useState<string | null>(null)
+    const [editingIndex, setEditingIndex] = useState<number | null>(null)
 
     useEffect(() => {
         const saved = localStorage.getItem('customMessages')
@@ -249,16 +256,44 @@ const Message = () => {
 
     const handleCreate = () => {
         if (!newLabel || !newText) return
-        const newMessage: CustomMessage = {
-            label: newLabel,
-            text: newText,
-            column: selectedColumn
+        
+        if (editingIndex !== null) {
+            // Modo edição
+            const updated = [...customMessages]
+            updated[editingIndex] = {
+                label: newLabel,
+                text: newText
+            }
+            saveMessagesToLocal(updated)
+            setEditingIndex(null)
+        } else {
+            // Modo criação
+            const newMessage: CustomMessage = {
+                label: newLabel,
+                text: newText
+            }
+            const updated = [...customMessages, newMessage]
+            saveMessagesToLocal(updated)
+            setActiveColumn('personalizada')
         }
-        const updated = [...customMessages, newMessage]
-        saveMessagesToLocal(updated)
+        
         setNewLabel('')
         setNewText('')
         setShowModal(false)
+    }
+
+    const handleEdit = (index: number) => {
+        setEditingIndex(index)
+        setNewLabel(customMessages[index].label)
+        setNewText(customMessages[index].text)
+        setShowModal(true)
+    }
+
+    const handleDelete = (index: number) => {
+        if (window.confirm('Tem certeza que deseja excluir esta mensagem?')) {
+            const updated = customMessages.filter((_, i) => i !== index)
+            saveMessagesToLocal(updated)
+        }
     }
 
     const handleClearStorage = () => {
@@ -276,33 +311,28 @@ const Message = () => {
         }
     }
 
-    const getMessagesForColumn = (column: 'padrao' | 'frota' | 'terceiro') => {
-        let defaultMessages: MessageItem[] = []
-
+    const getMessagesForColumn = (column: 'padrao' | 'frota' | 'terceiro' | 'personalizada') => {
         switch (column) {
             case 'padrao':
-                defaultMessages = mensagensPadrao
-                break
+                return mensagensPadrao
             case 'frota':
-                defaultMessages = mensagensFrota
-                break
+                return mensagensFrota
             case 'terceiro':
-                defaultMessages = mensagensTerceiro
-                break
+                return mensagensTerceiro
+            case 'personalizada':
+                // Garantir que cada item respeite o tipo MessageItem incluindo a propriedade image (mesmo que undefined)
+                return customMessages.map(msg => ({ label: msg.label, text: msg.text, image: undefined }))
+            default:
+                return []
         }
-
-        const customMessagesForColumn = customMessages
-            .filter(msg => msg.column === column)
-            .map(msg => ({ label: msg.label, text: msg.text, image: undefined }))
-
-        return [...defaultMessages, ...customMessagesForColumn]
     }
 
-    const getColumnTitle = (column: 'padrao' | 'frota' | 'terceiro') => {
+    const getColumnTitle = (column: 'padrao' | 'frota' | 'terceiro' | 'personalizada') => {
         switch (column) {
             case 'padrao': return 'Mensagens Padrão'
             case 'frota': return 'Mensagens Frota'
             case 'terceiro': return 'Mensagens Terceiro'
+            case 'personalizada': return 'Mensagens Personalizadas'
         }
     }
 
@@ -330,6 +360,12 @@ const Message = () => {
                 >
                     Terceiro
                 </button>
+                <button
+                    className={`selector-button ${activeColumn === 'personalizada' ? 'active' : ''}`}
+                    onClick={() => setActiveColumn('personalizada')}
+                >
+                    Personalizada
+                </button>
 
                 <div className="action-buttons">
                     <button onClick={() => setShowModal(true)} className="create-button">
@@ -338,7 +374,6 @@ const Message = () => {
                     <button onClick={handleClearStorage} className="clear-button">
                         🗑️ Esvaziar mensagens
                     </button>
-
                 </div>
             </div>
 
@@ -348,12 +383,55 @@ const Message = () => {
                     <h3 className="column-title">{getColumnTitle(activeColumn)}</h3>
                     {getMessagesForColumn(activeColumn).map((item, index) => (
                         <div key={`${activeColumn}-${item.label ?? 'imagem'}-${index}`} className="message-item">
-                            <button
-                                className="message-button"
-                                onClick={() => handleCopy(item.text ?? '', item.label ?? 'imagem')}
-                            >
-                                {item.label ?? ' - '}
-                            </button>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+                                <button
+                                    className="message-button"
+                                    onClick={() => handleCopy(item.text ?? '', item.label ?? 'imagem')}
+                                    style={{ flex: 1 }}
+                                >
+                                    {item.label ?? ' - '}
+                                </button>
+                                {activeColumn === 'personalizada' && (
+                                    <div style={{ display: 'flex', gap: '5px' }}>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleEdit(index)
+                                            }}
+                                            style={{
+                                                padding: '8px 12px',
+                                                border: 'none',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                fontSize: '18px',
+                                                background: '#4CAF50',
+                                                color: 'white'
+                                            }}
+                                            title="Editar mensagem"
+                                        >
+                                            ✏️
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleDelete(index)
+                                            }}
+                                            style={{
+                                                padding: '8px 12px',
+                                                border: 'none',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                fontSize: '18px',
+                                                background: '#f44336',
+                                                color: 'white'
+                                            }}
+                                            title="Excluir mensagem"
+                                        >
+                                            🗑️
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                             {item.image && (
                                 <OptimizedImage
                                     src={item.image}
@@ -368,7 +446,6 @@ const Message = () => {
 
             {copiedLabel && <div className="copied-feedback">✅ Copiado: {copiedLabel}</div>}
 
-
             <button onClick={handleClearImageCache} className="cache-button">
                 🔄 Limpar cache de imagens
             </button>
@@ -377,17 +454,9 @@ const Message = () => {
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        <h3 className="modal-title">Criar nova mensagem</h3>
-
-                        <select
-                            value={selectedColumn}
-                            onChange={e => setSelectedColumn(e.target.value as 'padrao' | 'frota' | 'terceiro')}
-                            className="modal-select"
-                        >
-                            <option value="padrao">Coluna Padrão</option>
-                            <option value="frota">Coluna Frota</option>
-                            <option value="terceiro">Coluna Terceiro</option>
-                        </select>
+                        <h3 className="modal-title">
+                            {editingIndex !== null ? 'Editar mensagem' : 'Criar nova mensagem'}
+                        </h3>
 
                         <input
                             type="text"
@@ -406,17 +475,23 @@ const Message = () => {
 
                         <div className="modal-actions">
                             <button onClick={handleCreate} className="modal-create">
-                                Salvar
+                                {editingIndex !== null ? 'Atualizar' : 'Salvar'}
                             </button>
-                            <button onClick={() => setShowModal(false)} className="modal-cancel">
+                            <button 
+                                onClick={() => {
+                                    setShowModal(false)
+                                    setEditingIndex(null)
+                                    setNewLabel('')
+                                    setNewText('')
+                                }} 
+                                className="modal-cancel"
+                            >
                                 Cancelar
                             </button>
                         </div>
                     </div>
                 </div>
             )}
-
-
         </div>
     )
 }

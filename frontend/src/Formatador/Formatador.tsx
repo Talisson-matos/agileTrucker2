@@ -44,9 +44,7 @@ interface CnpjResponse {
 
 const Formatador: React.FC = () => {
   const [mostrarNotas, setMostrarNotas] = useState<boolean>(false);
-  const [mostrarCnpj, setMostrarCnpj] = useState<boolean>(false);
-  const [textoTransformado, setTextoTransformado] = useState<string>("");
-  const [textoCopiado, setTextoCopiado] = useState<boolean>(false);
+  const [mostrarCnpj, setMostrarCnpj] = useState<boolean>(false); 
   const [feedback, setFeedback] = useState<string>("");
 
   // Estados para consulta CNPJ
@@ -335,127 +333,8 @@ const renderizarBotoesCnpj = (): React.ReactElement[] | null => {
         )}
       </div>
 
-      {/* Transformador de Texto */}
-      <div className="formatador-transformador">
-        <h3>🛠️ Transformador de Texto</h3>
-        <input
-          type="text"
-          placeholder="Digite aqui..."
-          value={textoTransformado}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setTextoTransformado(e.target.value)
-          }
-          className="formatador-input"
-        />
-
-        <div className="formatador-botoes">
-          <button
-            onClick={() => setTextoTransformado(textoTransformado.toUpperCase())}
-          >
-            MAIÚSCULO
-          </button>
-          <button
-            onClick={() => setTextoTransformado(textoTransformado.toLowerCase())}
-          >
-            minúsculo
-          </button>
-          <button
-            onClick={() =>
-              setTextoTransformado(
-                textoTransformado.replace(/\b\w/g, (char) =>
-                  char.toUpperCase()
-                )
-              )
-            }
-          >
-            Capitalize
-          </button>
-          <button
-            onClick={() =>
-              setTextoTransformado(
-                textoTransformado
-                  .split("")
-                  .map((char) => {
-                    const italicMap: Record<string, string> = {
-                      a: "𝘢",
-                      b: "𝘣",
-                      c: "𝘤",
-                      d: "𝘥",
-                      e: "𝘦",
-                      f: "𝘧",
-                      g: "𝘨",
-                      h: "𝘩",
-                      i: "𝘪",
-                      j: "𝘫",
-                      k: "𝘬",
-                      l: "𝘭",
-                      m: "𝘮",
-                      n: "𝘯",
-                      o: "𝘰",
-                      p: "𝘱",
-                      q: "𝘲",
-                      r: "𝘳",
-                      s: "𝘴",
-                      t: "𝘵",
-                      u: "𝘶",
-                      v: "𝘷",
-                      w: "𝘸",
-                      x: "𝘹",
-                      y: "𝘺",
-                      z: "𝘻",
-                      A: "𝘈",
-                      B: "𝘉",
-                      C: "𝘊",
-                      D: "𝘋",
-                      E: "𝘌",
-                      F: "𝘍",
-                      G: "𝘎",
-                      H: "𝘏",
-                      I: "𝘐",
-                      J: "𝘑",
-                      K: "𝘒",
-                      L: "𝘓",
-                      M: "𝘔",
-                      N: "𝘕",
-                      O: "𝘖",
-                      P: "𝘗",
-                      Q: "𝘘",
-                      R: "𝘙",
-                      S: "𝘚",
-                      T: "𝘛",
-                      U: "𝘜",
-                      V: "𝘝",
-                      W: "𝘞",
-                      X: "𝘟",
-                      Y: "𝘠",
-                      Z: "𝘡",
-                    };
-                    return italicMap[char] || char;
-                  })
-                  .join("")
-              )
-            }
-          >
-            𝘐𝘵á𝘭𝘪𝘤𝘰
-          </button>
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(textoTransformado);
-              setTextoCopiado(true);
-              setTimeout(() => setTextoCopiado(false), 1500);
-            }}
-          >
-            📋 Copiar
-          </button>
-          <button onClick={() => setTextoTransformado("")}>🧹 Limpar</button>
-        </div>
-
-        {textoCopiado && (
-          <span className="formatador-feedback">✅ Texto copiado!</span>
-        )}
-      </div>
     </div>
   );
-};
+}
 
 export default Formatador;
