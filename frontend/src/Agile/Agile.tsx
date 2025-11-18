@@ -27,7 +27,8 @@ const Agile: React.FC = () => {
     { label: "FRETE TOTAL TERCEIRO", content: "" },
     { label: "FILIAL", content: "" },
     { label: "CTE", content: "" },
-    { label: "MDFE", content: "" },
+    { label: "LIBERAÇÃO", content: "" },
+    { label: "MONITORAMENTO", content: "" },
   ];
 
   const [buttons, setButtons] = useState<ButtonItem[]>(initialButtons);
@@ -253,7 +254,7 @@ const Agile: React.FC = () => {
 
   return (
     <div className="agile-container">
-      <h2 className="agile-title">Agile Pro</h2>
+      <h2 className="agile-title">Agile Pro</h2>     
 
       <div className="agile-cleaner-box">
         <h4>Limpar Número</h4>
@@ -263,19 +264,6 @@ const Agile: React.FC = () => {
           onChange={handlePasteInput}
         />
         {feedback && <span className="agile-feedback">{feedback}</span>}
-      </div>
-
-      <div className="agile-button-grid">
-        {buttons.map((btn, i) => (
-          <button
-            key={i}
-            className="agile-botao-metalico agile-clip-btn"
-            onClick={() => handleClick(i)}
-          >
-            <span className="agile-label">{btn.label}</span>
-            <span className="agile-content">{btn.content || "[vazio]"}</span>
-          </button>
-        ))}
       </div>
 
       <div className="agile-actions-bar">
@@ -294,6 +282,19 @@ const Agile: React.FC = () => {
           Limpar Tudo
         </button>
       </div>
+
+      <div className="agile-button-grid">
+        {buttons.map((btn, i) => (
+          <button
+            key={i}
+            className="agile-botao-metalico agile-clip-btn"
+            onClick={() => handleClick(i)}
+          >
+            <span className="agile-label">{btn.label}</span>
+            <span className="agile-content">{btn.content || "[vazio]"}</span>
+          </button>
+        ))}
+      </div>      
 
       <div className="agile-generator-control">
         <button
