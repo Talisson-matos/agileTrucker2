@@ -31,7 +31,7 @@ const mensagensPadrao: MessageItem[] = [
     {
         label: 'Solicitação de Checklist',
         text: 'Sr.@, o cheklist de seu veículo está vencido, poderia entrar em contato com a gerenciadora para solicitar a sua realização, por gentileza? Caso demorem para lhe responder, apenas nos notifique que redobraremos as cobranças junto a eles para agilizarem seu atendimento. | Assim que concluído apenas nos notique para liberarmos suas documentações.',
-        image: '/checklist.jpg',
+        
     },
 
     {
