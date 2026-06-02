@@ -14,38 +14,34 @@ type MessageItem = {
 
 const mensagensPadrao: MessageItem[] = [
     {
-        label: 'Mensagem Inicial',
-        text: `Seguem suas Documentações de Viagem:`,
+        label: 'Carregamento',
+        text: `Assim que concluir carregamento e amarração, favor nos notificar juntamente com o envio das notas para coferência e liberação de suas documentações.`,
     },
     {
-        label: 'Mensagem Monitoramento',
-        text: `Você será monitorado pela KOMANDO, favor dar início de viagem no teclado!\nAo fazer a parada para pernoite, lembre-se de parar em um local seguro onde haja sinal telefônico para facilitar a comunicação.\n\nCódigo SM:\n`,
+        label: 'Validação de Conta Bancária',
+        text: `Sr.@, poderia nos confirmar conta bancária associada ao proprietário ANTT para pagamento de frete, por gentileza?`,
     },
     
    {
-        label: 'Monitoramento',
-        text: '*PARA PROBLEMAS COM O MONITORAMENTO, ACESSE O LINK ABAIXO*\n\nhttps://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Estou%20com%20problemas%20com%20o%20MONITORAMENTO.%20Pode%20me%20ajudar,%20por%20favor?%20',
-        image: '/monitoramento.jpg',
+        label: 'Validação de Rota',
+        text: '*Poderia nos confirmar quais destas Rotas de Itinerário que o senhor irá seguir viagem?',
+      
     }, 
 
-
     {
-        image: '/nestle1.jpg',
-    },
-    {
-        image: '/nestle2.jpg',
-    },
-
-     {
-        label: 'Mensagem Final',
-        text: 'Desejamos uma excelente viagem, Sr.@!\n\nEstamos à disposição. 🌍 🛣️',
-    },
-
-    {
-        label: 'Checklist',
-        text: `*SOLICITE SEU CHECKLSIT ACESSANDO O LINK ABAIXO*\n https://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Quero%20fazer%20o%20checklist%20do%20RASTREADOR%20e%20depois%20vou%20me%20apresentar%20para%20o%20carregamento`,
+        label: 'Solicitação de Checklist',
+        text: 'Sr.@, o cheklist de seu veículo está vencido, poderia entrar em contato com a gerenciadora para solicitar a sua realização, por gentileza? Caso demorem para lhe responder, apenas nos notifique que redobraremos as cobranças junto a eles para agilizarem seu atendimento. | Assim que concluído apenas nos notique para liberarmos suas documentações.',
         image: '/checklist.jpg',
     },
+
+    {
+        label: 'Link Checklist',
+        text: '*SOLICITE SEU CHECKLSIT ACESSANDO O LINK ABAIXO*\n\n https://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Quero%20fazer%20o%20checklist%20do%20RASTREADOR%20e%20depois%20vou%20me%20apresentar%20para%20o%20carregamento',
+        image: '/checklist.jpg',
+    },
+
+
+   
     
 ]
 
@@ -70,6 +66,13 @@ const mensagensFrota: MessageItem[] = [
     {
         label: 'Mensagem Final',
         text: 'Desejamos uma excelente viagem, Sr.@!\n\nEstamos à disposição. 🌍 🛣️',
+    },
+
+     {
+        image: '/nestle1.jpg',
+    },
+    {
+        image: '/nestle2.jpg',
     },
 ]
 
@@ -337,13 +340,13 @@ const Message = () => {
                     className={`selector-button ${activeColumn === 'padrao' ? 'active' : ''}`}
                     onClick={() => setActiveColumn('padrao')}
                 >
-                    Nestlé
+                    Mensagem Rápida
                 </button>
                 <button
                     className={`selector-button ${activeColumn === 'frota' ? 'active' : ''}`}
                     onClick={() => setActiveColumn('frota')}
                 >
-                    Frota | Agregado | Outros
+                    Frota | Agregado | Nestlé
                 </button>
                 <button
                     className={`selector-button ${activeColumn === 'terceiro' ? 'active' : ''}`}
