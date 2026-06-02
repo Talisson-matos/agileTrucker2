@@ -14,63 +14,58 @@ type MessageItem = {
 
 const mensagensPadrao: MessageItem[] = [
     {
-        label: 'Carregamento',
-        text: `Prezado Sr.@,
-Assim que finalizado o carregamento e a amarração, solicitamos, por gentileza, o envio das fotos das notas fiscais para prosseguirmos com a documentação. 📸 `,
+        label: 'Mensagem Inicial',
+        text: `Seguem suas Documentações de Viagem:`,
     },
     {
-        label: 'Pedagio',
-        text: `Prezado Sr.@,
-Pedimos que solicite o Vale-Pedágio na portaria, para que possamos dar continuidade ao envio de sua documentação. 🛣️ 📄`,
+        label: 'Mensagem Monitoramento',
+        text: `Você será monitorado pela KOMANDO, favor dar início de viagem no teclado!\nAo fazer a parada para pernoite, lembre-se de parar em um local seguro onde haja sinal telefônico para facilitar a comunicação.\n\nCódigo SM:\n`,
     },
-    {
-        label: 'Descarga',
-        text: 'Agradecemos pelo envio das informações. Procederemos com a baixa da documentação conforme recebido. ✅ 📂',
-    },
-    {
-        label: 'Envio de Notas',
-        text: 'Grato pelos envios prestados, em breve retornaremos com suas documentações no grupo. 📄 ✅ ',
-    },
-    {
-        label: 'Atraso',
-        text: 'Sr.@, estamos com alta demanda no momento. Mas assim que tivermos disponibilidade retornaremos no grupo com suas documentações',
-    },
-    {
+    
+   {
         label: 'Monitoramento',
         text: '*PARA PROBLEMAS COM O MONITORAMENTO, ACESSE O LINK ABAIXO*\n\nhttps://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Estou%20com%20problemas%20com%20o%20MONITORAMENTO.%20Pode%20me%20ajudar,%20por%20favor?%20',
         image: '/monitoramento.jpg',
-    },
-    {
-        label: 'Checklist',
-        text: `*SOLICITE SEU CHECKLSIT ACESSANDO O LINK ABAIXO*\n https://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Quero%20fazer%20o%20checklist%20do%20RASTREADOR%20e%20depois%20vou%20me%20apresentar%20para%20o%20carregamento`,
-        image: '/checklist.jpg',
-    },
+    }, 
+
+
     {
         image: '/nestle1.jpg',
     },
     {
         image: '/nestle2.jpg',
     },
+
+     {
+        label: 'Mensagem Final',
+        text: 'Desejamos uma excelente viagem, Sr.@!\n\nEstamos à disposição. 🌍 🛣️',
+    },
+
+    {
+        label: 'Checklist',
+        text: `*SOLICITE SEU CHECKLSIT ACESSANDO O LINK ABAIXO*\n https://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Quero%20fazer%20o%20checklist%20do%20RASTREADOR%20e%20depois%20vou%20me%20apresentar%20para%20o%20carregamento`,
+        image: '/checklist.jpg',
+    },
+    
 ]
 
 const mensagensFrota: MessageItem[] = [
-     {
+    {
         label: 'Mensagem Inicial',
-        text: `Prezado Sr.@,
-Segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛`,
+        text: `Seguem suas Documentações de Viagem:`,
     },
     {
-        label: 'Mensagem Monitoramento - (caso se viagem for monitorada)',
+        label: 'Mensagem Monitoramento',
         text: `Você será monitorado pela KOMANDO, favor dar início de viagem no teclado!\nAo fazer a parada para pernoite, lembre-se de parar em um local seguro onde haja sinal telefônico para facilitar a comunicação.\n\nCódigo SM:\n`,
     },
     {
         label: 'Print Monitoramento',
-        text: 'Segue o print do monitoramento para sua referência.',       
+        text: 'Segue o print do monitoramento pela Komando para sua referência de viagem.',
     },
     {
-        label: 'Orientações',
-        text: 'Favor se antentar às orientações abaixo, por gentileza:',
-        image: '/messageFrota.jpg',
+        label: 'Monitoramento',
+        text: '*PARA PROBLEMAS COM O MONITORAMENTO, ACESSE O LINK ABAIXO*\n\nhttps://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Estou%20com%20problemas%20com%20o%20MONITORAMENTO.%20Pode%20me%20ajudar,%20por%20favor?%20',
+        image: '/monitoramento.jpg',
     },
     {
         label: 'Mensagem Final',
@@ -81,13 +76,9 @@ Segue em anexo suas documentações de transporte para realização da viagem em
 const mensagensTerceiro: MessageItem[] = [
     {
         label: 'Mensagem Inicial',
-        text: `Prezado Sr.@,
-Segue em anexo suas documentações de transporte para realização da viagem em conformidade com a legislação vigente. 📎🚛`,
+        text: `Seguem suas Documentações de Viagem:`,
     },
-    {
-        label: 'Mensagem Monitoramento - (caso se viagem for monitorada)',
-        text: `Você será monitorado pela KOMANDO, favor dar início de viagem no teclado!\nAo fazer a parada para pernoite, lembre-se de parar em um local seguro onde haja sinal telefônico para facilitar a comunicação.\n\nCódigo SM:\n`,
-    },
+
     {
         label: 'Regras de Saldo',
         text: `*REGRAS* para recebimento do saldo:\n1. *Imprimir CTe em duas vias*, uma para o cliente e uma para a SAMID Transportes.\n2. Após a descarga, *scanear o CTe completo (não somente o canhoto) frente e verso (mesmo o verso estando em branco)*, juntamente com os canhotos e encaminhar para os e-mails e endereço a seguir:`,
@@ -256,7 +247,7 @@ const Message = () => {
 
     const handleCreate = () => {
         if (!newLabel || !newText) return
-        
+
         if (editingIndex !== null) {
             // Modo edição
             const updated = [...customMessages]
@@ -276,7 +267,7 @@ const Message = () => {
             saveMessagesToLocal(updated)
             setActiveColumn('personalizada')
         }
-        
+
         setNewLabel('')
         setNewText('')
         setShowModal(false)
@@ -338,7 +329,7 @@ const Message = () => {
 
     return (
         <div className="message-container">
-            <h2 className="message-title">📨 Mensagens do Motorista</h2>
+            <h2 className="message-title"> Mensagens de Envio de Documentações </h2>
 
             {/* Seletor de Coluna */}
             <div className="column-selector">
@@ -346,19 +337,19 @@ const Message = () => {
                     className={`selector-button ${activeColumn === 'padrao' ? 'active' : ''}`}
                     onClick={() => setActiveColumn('padrao')}
                 >
-                    Padrão
+                    Nestlé
                 </button>
                 <button
                     className={`selector-button ${activeColumn === 'frota' ? 'active' : ''}`}
                     onClick={() => setActiveColumn('frota')}
                 >
-                    Frota
+                    Frota | Agregado | Outros
                 </button>
                 <button
                     className={`selector-button ${activeColumn === 'terceiro' ? 'active' : ''}`}
                     onClick={() => setActiveColumn('terceiro')}
                 >
-                    Terceiro
+                    Operação Garrafa
                 </button>
                 <button
                     className={`selector-button ${activeColumn === 'personalizada' ? 'active' : ''}`}
@@ -477,13 +468,13 @@ const Message = () => {
                             <button onClick={handleCreate} className="modal-create">
                                 {editingIndex !== null ? 'Atualizar' : 'Salvar'}
                             </button>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setShowModal(false)
                                     setEditingIndex(null)
                                     setNewLabel('')
                                     setNewText('')
-                                }} 
+                                }}
                                 className="modal-cancel"
                             >
                                 Cancelar
