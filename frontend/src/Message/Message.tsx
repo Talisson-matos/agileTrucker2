@@ -15,22 +15,22 @@ type MessageItem = {
 const mensagensPadrao: MessageItem[] = [
     {
         label: 'Carregamento',
-        text: `Assim que concluir carregamento e amarração, favor nos notificar juntamente com o envio das notas para coferência e liberação de suas documentações.`,
+        text: `Assim que concluir carregamento e amarração, favor nos notificar juntamente com o envio das notas para conferência e liberação de suas documentações.`,
     },
     {
         label: 'Validação de Conta Bancária',
-        text: `Sr.@, poderia nos confirmar conta bancária associada ao proprietário ANTT para pagamento de frete, por gentileza?`,
+        text: `Sr.@,\n\nPoderia nos confirmar Conta Bancária associada ao proprietário da ANTT para pagamento de frete, por gentileza?\n\n ► Banco: \n ► Agência: \n ► Conta Corrente:`,
     },
     
    {
         label: 'Validação de Rota',
-        text: '*Poderia nos confirmar quais destas Rotas de Itinerário que o senhor irá seguir viagem?',
+        text: 'Sr.@,\n\nPoderia nos confirmar quais destas Rotas de Itinerário o senhor irá seguir viagem?\n\n Rota 1: \n Rota 2: \n Rota 3:',
       
     }, 
 
     {
         label: 'Solicitação de Checklist',
-        text: 'Sr.@, o cheklist de seu veículo está vencido, poderia entrar em contato com a gerenciadora para solicitar a sua realização, por gentileza? Caso demorem para lhe responder, apenas nos notifique que redobraremos as cobranças junto a eles para agilizarem seu atendimento. | Assim que concluído apenas nos notique para liberarmos suas documentações.',
+        text: 'Sr.@,\n\n O cheklist de seu veículo está vencido, poderia entrar em contato com a gerenciadora para solicitar a sua realização, por gentileza?',
         
     },
 
@@ -38,6 +38,12 @@ const mensagensPadrao: MessageItem[] = [
         label: 'Link Checklist',
         text: '*SOLICITE SEU CHECKLSIT ACESSANDO O LINK ABAIXO*\n\n https://api.whatsapp.com/send?phone=5511947794867&text=Ol%C3%A1!%20Quero%20fazer%20o%20checklist%20do%20RASTREADOR%20e%20depois%20vou%20me%20apresentar%20para%20o%20carregamento',
         image: '/checklist.jpg',
+    },
+
+    {
+        label: 'Finalização de Checklist',
+        text: 'Caso demorem para te responder, apenas nos informe que redobraremos as cobranças junto a eles para agilizarem seu atendimento. E assim que concluído apenas nos notique para liberarmos suas documentações.',
+        
     },
 
 
