@@ -75,6 +75,11 @@ const mensagensFrota: MessageItem[] = [
         image: '/komandoAdvisor.jpeg',
     },
     {
+        label: 'Orientação Motorista',       
+        image: '/imagemSygentaLongPing.jpeg
+        ',
+    },
+    {
         label: 'Mensagem Final',
         text: 'Desejamos uma excelente viagem, Sr.@!\n\nEstamos à disposição. 🌍 🛣️',
     },
