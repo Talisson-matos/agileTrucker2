@@ -74,10 +74,8 @@ const mensagensFrota: MessageItem[] = [
         text: '*Orientação ao Parceiro Motorista:*',
         image: '/komandoAdvisor.jpeg',
     },
-    {
-        label: 'Orientação Motorista',       
-        image: '/imagemSygentaLongPing.jpeg
-        ',
+    {       
+        image: '/imagemSygentaLongPing.jpeg',
     },
     {
         label: 'Mensagem Final',
