@@ -70,6 +70,12 @@ const mensagensFrota: MessageItem[] = [
         image: '/monitoramento.jpg',
     },
     {
+        label: 'Mensagem Recibo de Entrega',       
+        image: '/ReciboDeEntrega.jpeg',
+    },
+
+
+    {
         label: 'Orientação Motorista',
         text: '*Orientação ao Parceiro Motorista:*',
         image: '/komandoAdvisor.jpeg',
